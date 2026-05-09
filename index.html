@@ -468,6 +468,36 @@ select.form-control {
   color: var(--muted);
   line-height: 1.6;
 }
+
+/* --- Stack --- */
+.stack { padding: var(--section-pad); }
+.stack__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.stack__card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 150ms;
+}
+.stack__card:hover { border-color: var(--accent); }
+.stack__name {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+.stack__role {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--muted);
+}
   </style>
 </head>
 <body>
@@ -620,6 +650,40 @@ select.form-control {
           <div class="how__num">03</div>
           <h3 class="how__step-title">Recibes implicaciones técnicas</h3>
           <p class="how__step-desc">Obtienes una lista concreta de qué debes implementar, organizada por normativa, lista para llevar a código.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stack -->
+  <section class="stack">
+    <div class="container">
+      <h2 class="section-title">Stack</h2>
+      <p class="section-subtitle">Las tecnologías que hacen funcionar LegalDev.</p>
+      <div class="stack__grid">
+        <div class="stack__card">
+          <span class="stack__name">FastAPI</span>
+          <span class="stack__role">Framework API y routing</span>
+        </div>
+        <div class="stack__card">
+          <span class="stack__name">ChromaDB</span>
+          <span class="stack__role">Vector store local persistente</span>
+        </div>
+        <div class="stack__card">
+          <span class="stack__name">LangChain</span>
+          <span class="stack__role">Orquestación RAG y cadenas LLM</span>
+        </div>
+        <div class="stack__card">
+          <span class="stack__name">Groq — llama-4-scout</span>
+          <span class="stack__role">Inferencia LLM de alta velocidad</span>
+        </div>
+        <div class="stack__card">
+          <span class="stack__name">sentence-transformers</span>
+          <span class="stack__role">Embeddings multilingües</span>
+        </div>
+        <div class="stack__card">
+          <span class="stack__name">Railway</span>
+          <span class="stack__role">Despliegue y hosting del servicio</span>
         </div>
       </div>
     </div>
