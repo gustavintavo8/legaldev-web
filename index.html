@@ -548,6 +548,114 @@ select.form-control {
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
+  // Smooth scroll hero CTA → demo section
+  document.getElementById('hero-cta').addEventListener('click', function () {
+    document.getElementById('demo').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // Show/hide tipo_ia when usa_ia toggle changes
+  document.getElementById('usa_ia').addEventListener('change', function () {
+    document.getElementById('tipo_ia_wrapper').style.display = this.checked ? 'block' : 'none';
+  });
+
+  // --- Form submit ---
+  var form = document.getElementById('analyze-form');
+  var outputEl = document.getElementById('demo-output');
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function setState(state, data) {
+    outputEl.style.display = 'block';
+
+    if (state === 'loading') {
+      outputEl.innerHTML =
+        '<div class="demo__loading">' +
+          '<span class="dot">·</span>' +
+          '<span class="dot">·</span>' +
+          '<span class="dot">·</span>' +
+          '<span class="demo__loading-text">Analizando normativa...</span>' +
+        '</div>';
+      return;
+    }
+
+    if (state === 'error') {
+      outputEl.innerHTML =
+        '<div class="demo__error">⚠ Error: ' + escapeHtml(data.message) + '</div>';
+      return;
+    }
+
+    if (state === 'success') {
+      var badges = data.normativas_detectadas
+        .map(function (n) { return '<span class="badge">' + escapeHtml(n) + '</span>'; })
+        .join('');
+
+      outputEl.innerHTML =
+        '<div class="response-panel">' +
+          '<div class="response-panel__header">' +
+            '<span class="response-panel__label">normativas →</span>' +
+            badges +
+            '<span class="response-panel__stat">' + data.chunks_utilizados + ' chunks</span>' +
+          '</div>' +
+          '<div class="response-panel__body" id="response-body"></div>' +
+        '</div>';
+
+      document.getElementById('response-body').innerHTML =
+        marked.parse(data.respuesta_completa) +
+        '<div class="response-panel__disclaimer">⚠️ ' + escapeHtml(data.disclaimer) + '</div>';
+    }
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    setState('loading');
+
+    var fd = new FormData(form);
+    var tiposData = fd.getAll('tipos_datos_personales');
+
+    var payload = {
+      tipo_proyecto:              fd.get('tipo_proyecto'),
+      descripcion_breve:          fd.get('descripcion_breve') || '',
+      usa_ia:                     document.getElementById('usa_ia').checked,
+      tipo_ia:                    document.getElementById('usa_ia').checked ? fd.get('tipo_ia') : null,
+      usa_cookies:                document.getElementById('usa_cookies').checked,
+      ccaa:                       fd.get('ccaa'),
+      es_empresa:                 document.getElementById('es_empresa').checked,
+      tipos_datos_personales:     tiposData.length > 0 ? tiposData : ['ninguno'],
+      // Hidden constants
+      tiene_usuarios_registrados: true,
+      acceso_publico:             false,
+      usuarios_menores:           false,
+      usuarios_ue:                true,
+      transferencia_datos_terceros: false,
+      monetizacion:               null,
+      contenido_digital:          false,
+      colegiado:                  null
+    };
+
+    try {
+      var res = await fetch('https://legaldev-production.up.railway.app/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        var errBody = await res.json().catch(function () { return {}; });
+        throw new Error(errBody.detail || 'HTTP ' + res.status);
+      }
+
+      var data = await res.json();
+      setState('success', data);
+    } catch (err) {
+      setState('error', { message: err.message || 'Error de conexión. Inténtalo de nuevo.' });
+    }
+  });
   </script>
 </body>
 </html>
