@@ -415,6 +415,59 @@ select.form-control {
   margin-top: 32px;
   flex-wrap: wrap;
 }
+
+/* --- How it works --- */
+.how {
+  padding: var(--section-pad);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.how__steps {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+.how__step {
+  flex: 1;
+  padding: 0 24px;
+}
+.how__step:first-child { padding-left: 0; }
+.how__step:last-child  { padding-right: 0; }
+.how__connector {
+  flex-shrink: 0;
+  width: 40px;
+  height: 1px;
+  border-top: 1px dashed var(--border);
+  margin-top: 16px;
+  align-self: flex-start;
+}
+.how__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+.how__step-title {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.how__step-desc {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
   </style>
 </head>
 <body>
@@ -542,6 +595,32 @@ select.form-control {
         </form>
 
         <div class="demo__output" id="demo-output" style="display:none;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cómo funciona -->
+  <section class="how">
+    <div class="container">
+      <h2 class="section-title">Cómo funciona</h2>
+      <div class="how__steps">
+        <div class="how__step">
+          <div class="how__num">01</div>
+          <h3 class="how__step-title">Describes tu proyecto</h3>
+          <p class="how__step-desc">Rellena el cuestionario con los detalles técnicos: tipo de proyecto, datos que maneja, uso de IA, cookies, y más.</p>
+        </div>
+        <div class="how__connector" aria-hidden="true"></div>
+        <div class="how__step">
+          <div class="how__num">02</div>
+          <h3 class="how__step-title">Analizamos la normativa</h3>
+          <p class="how__step-desc">Nuestro sistema RAG busca en 16 documentos legales indexados — RGPD, EU AI Act, LOPDGDD, ENS, guías AEPD y más.</p>
+        </div>
+        <div class="how__connector" aria-hidden="true"></div>
+        <div class="how__step">
+          <div class="how__num">03</div>
+          <h3 class="how__step-title">Recibes implicaciones técnicas</h3>
+          <p class="how__step-desc">Obtienes una lista concreta de qué debes implementar, organizada por normativa, lista para llevar a código.</p>
+        </div>
       </div>
     </div>
   </section>
