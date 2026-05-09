@@ -167,7 +167,16 @@ select.form-control {
   gap: 12px;
   cursor: pointer;
 }
-.toggle-input { display: none; }
+.toggle-input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
 .toggle-track {
   width: 40px;
   height: 22px;
@@ -432,8 +441,8 @@ select.form-control {
   flex: 1;
   padding: 0 24px;
 }
-.how__step:first-child { padding-left: 0; }
-.how__step:last-child  { padding-right: 0; }
+.how__step:first-of-type { padding-left: 0; }
+.how__step:nth-of-type(3) { padding-right: 0; }
 .how__connector {
   flex-shrink: 0;
   width: 40px;
@@ -557,7 +566,7 @@ select.form-control {
 <body>
 
   <!-- Navbar -->
-  <nav class="navbar">
+  <nav class="navbar" aria-label="Navegación principal">
     <div class="container navbar__inner">
       <a href="/" class="navbar__logo">&lt;/legaldev&gt;</a>
       <a href="https://github.com/gustavintavo8/legaldev" class="navbar__link" target="_blank" rel="noopener">Ver en GitHub</a>
@@ -566,8 +575,8 @@ select.form-control {
 
   <!-- Hero -->
   <section class="hero">
-    <div class="hero__bg-grid"></div>
-    <div class="hero__glow"></div>
+    <div class="hero__bg-grid" aria-hidden="true"></div>
+    <div class="hero__glow" aria-hidden="true"></div>
     <div class="container hero__content">
       <p class="hero__label">// análisis legal automático</p>
       <h1 class="hero__headline">Sabe qué leyes aplican a tu <span class="hero__accent">proyecto.</span></h1>
@@ -809,7 +818,7 @@ select.form-control {
           '<div class="response-panel__header">' +
             '<span class="response-panel__label">normativas →</span>' +
             badges +
-            '<span class="response-panel__stat">' + data.chunks_utilizados + ' chunks</span>' +
+            '<span class="response-panel__stat">' + escapeHtml(String(data.chunks_utilizados)) + ' chunks</span>' +
           '</div>' +
           '<div class="response-panel__body" id="response-body"></div>' +
         '</div>';
