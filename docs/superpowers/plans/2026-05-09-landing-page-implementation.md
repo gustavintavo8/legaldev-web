@@ -1,0 +1,1271 @@
+# LegalDev Landing Page — Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Build a single `index.html` dark-mode landing page for LegalDev with a live interactive demo that calls the deployed API.
+
+**Architecture:** One `index.html` file — all CSS in a `<style>` block in `<head>`, all JS in a `<script>` block before `</body>`. Built section by section, each task adds HTML + CSS (and JS for Task 5). No frameworks, no build tools. Works via `file://` locally and on Vercel.
+
+**Tech Stack:** Vanilla HTML5, CSS3 (custom properties, CSS animations, grid/flexbox), Vanilla JS (fetch, DOM), marked.js from CDN for markdown rendering, Google Fonts (JetBrains Mono + Inter), Vercel for deployment.
+
+---
+
+## File Map
+
+| File | Purpose |
+|------|---------|
+| `index.html` | Complete landing page — all HTML, CSS, JS in one file |
+| `vercel.json` | Rewrites all routes to index.html for Vercel deployment |
+
+---
+
+## Task 0: Project scaffold
+
+**Files:**
+- Create: `vercel.json`
+- Create: `index.html` (skeleton only)
+
+- [ ] **Step 1: Create vercel.json**
+
+```json
+{"rewrites": [{"source": "/(.*)", "destination": "/index.html"}]}
+```
+
+- [ ] **Step 2: Create index.html skeleton**
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LegalDev analiza RGPD, EU AI Act, LOPDGDD, ENS y más — y te dice exactamente qué implementar en tu proyecto de software.">
+  <title>LegalDev — Análisis legal automático para developers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+  </style>
+</head>
+<body>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+  </script>
+</body>
+</html>
+```
+
+- [ ] **Step 3: Open in browser and verify it loads**
+
+Open `index.html` directly in a browser (`file://` path). Expected: blank page, no console errors, Google Fonts request visible in Network tab.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add index.html vercel.json
+git commit -m "feat: project scaffold — skeleton index.html and vercel.json"
+```
+
+---
+
+## Task 1: CSS foundation
+
+**Files:**
+- Modify: `index.html` — fill the `<style>` block
+
+- [ ] **Step 1: Add CSS foundation inside the `<style>` block**
+
+Replace the empty `<style></style>` with:
+
+```html
+<style>
+/* --- Custom Properties --- */
+:root {
+  --bg:        #0a0a0a;
+  --surface:   #111111;
+  --border:    #1f1f1f;
+  --text:      #ededed;
+  --muted:     #888888;
+  --accent:    #00d084;
+  --accent-dim:#00d08420;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Inter', sans-serif;
+  --max-w:     1100px;
+  --section-pad: 80px 0;
+}
+
+/* --- Reset --- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font: inherit; }
+select, input { font: inherit; }
+
+/* --- Layout utilities --- */
+.container {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.section-title {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+}
+.section-subtitle {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--muted);
+  margin-bottom: 48px;
+}
+
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 20px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: opacity 150ms, box-shadow 150ms, border-color 150ms;
+  white-space: nowrap;
+}
+.btn--primary {
+  background: var(--accent);
+  color: #0a0a0a;
+  box-shadow: 0 0 20px rgba(0,208,132,0.25);
+}
+.btn--primary:hover { box-shadow: 0 0 28px rgba(0,208,132,0.4); opacity: 0.95; }
+.btn--ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn--ghost:hover { border-color: var(--muted); }
+.btn--full { width: 100%; font-family: var(--font-mono); }
+</style>
+```
+
+- [ ] **Step 2: Verify in browser**
+
+Reload `index.html`. Expected: page background is `#0a0a0a`, no console errors.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: CSS foundation — custom properties, reset, layout utilities, buttons"
+```
+
+---
+
+## Task 2: Navbar
+
+**Files:**
+- Modify: `index.html` — add navbar HTML inside `<body>` (before the scripts), add navbar CSS inside `<style>`
+
+- [ ] **Step 1: Add navbar HTML**
+
+Insert inside `<body>` before the `<script>` tags:
+
+```html
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="container navbar__inner">
+    <a href="/" class="navbar__logo">&lt;/legaldev&gt;</a>
+    <a href="https://github.com/gustavintavo8/legaldev" class="navbar__link" target="_blank" rel="noopener">Ver en GitHub</a>
+  </div>
+</nav>
+```
+
+- [ ] **Step 2: Add navbar CSS**
+
+Append inside `<style>` after the buttons block:
+
+```css
+/* --- Navbar --- */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  height: 56px;
+  display: flex;
+  align-items: center;
+}
+.navbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.navbar__logo {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.navbar__link {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--muted);
+  transition: color 150ms;
+}
+.navbar__link:hover { color: var(--text); }
+```
+
+- [ ] **Step 3: Verify in browser**
+
+Reload. Expected: sticky dark navbar, `</legaldev>` logo left, `Ver en GitHub` right, stays visible on scroll.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: navbar — sticky, logo, GitHub link"
+```
+
+---
+
+## Task 3: Hero section
+
+**Files:**
+- Modify: `index.html` — add hero HTML after navbar, add hero CSS inside `<style>`
+
+- [ ] **Step 1: Add hero HTML**
+
+Insert after the `</nav>` tag:
+
+```html
+<!-- Hero -->
+<section class="hero">
+  <div class="hero__bg-grid"></div>
+  <div class="hero__glow"></div>
+  <div class="container hero__content">
+    <p class="hero__label">// análisis legal automático</p>
+    <h1 class="hero__headline">Sabe qué leyes aplican a tu <span class="hero__accent">proyecto.</span></h1>
+    <p class="hero__sub">Describe tu proyecto de software. LegalDev analiza RGPD, EU AI Act, LOPDGDD, ENS y más — y te dice exactamente qué implementar.</p>
+    <div class="hero__ctas">
+      <button class="btn btn--primary" id="hero-cta">Probar ahora →</button>
+      <a href="https://legaldev-production.up.railway.app/docs" class="btn btn--ghost" target="_blank" rel="noopener">Ver documentación</a>
+    </div>
+  </div>
+</section>
+```
+
+- [ ] **Step 2: Add hero CSS**
+
+Append inside `<style>`:
+
+```css
+/* --- Hero --- */
+@keyframes bgscroll {
+  from { background-position: 0 0; }
+  to   { background-position: 40px 40px; }
+}
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.hero__bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: bgscroll 10s linear infinite;
+  pointer-events: none;
+}
+.hero__glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 400px;
+  background: radial-gradient(ellipse 800px 400px at 50% 0%, rgba(0,208,132,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero__content {
+  position: relative;
+  z-index: 1;
+  padding-top: 80px;
+  padding-bottom: 80px;
+  max-width: 680px;
+}
+.hero__label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+  margin-bottom: 24px;
+  letter-spacing: 0.05em;
+}
+.hero__headline {
+  font-family: var(--font-mono);
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+.hero__accent { color: var(--accent); }
+.hero__sub {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-top: 20px;
+  max-width: 560px;
+}
+.hero__ctas {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+```
+
+- [ ] **Step 3: Verify in browser**
+
+Reload. Expected: full-viewport hero, animated scrolling grid (barely visible), green glow at top, big JetBrains Mono headline with `proyecto.` in green, two CTAs. Primary button has green glow.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: hero section — animated grid bg, green glow, headline, CTAs"
+```
+
+---
+
+## Task 4: Demo form — HTML & CSS
+
+**Files:**
+- Modify: `index.html` — add demo section HTML after hero, add demo CSS inside `<style>`
+
+- [ ] **Step 1: Add demo section HTML**
+
+Insert after the closing `</section>` of the hero:
+
+```html
+<!-- Demo -->
+<section class="demo" id="demo">
+  <div class="container">
+    <h2 class="section-title">Pruébalo ahora</h2>
+    <p class="section-subtitle">Rellena el formulario y obtén las normativas aplicables a tu proyecto en segundos.</p>
+    <div class="demo__panel">
+      <form class="demo__form" id="analyze-form" novalidate>
+
+        <div class="form-group">
+          <label class="form-label" for="tipo_proyecto">Tipo de proyecto</label>
+          <select class="form-control" id="tipo_proyecto" name="tipo_proyecto" required>
+            <option value="app_web">App web</option>
+            <option value="app_movil">App móvil</option>
+            <option value="api">API</option>
+            <option value="saas">SaaS</option>
+            <option value="ecommerce">E-commerce</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="descripcion_breve">Descripción breve</label>
+          <input class="form-control" type="text" id="descripcion_breve" name="descripcion_breve" placeholder="Describe tu proyecto en una frase" maxlength="500" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tipos de datos personales</label>
+          <div class="checkbox-group">
+            <label class="checkbox-item"><input type="checkbox" name="tipos_datos_personales" value="nombre"> nombre</label>
+            <label class="checkbox-item"><input type="checkbox" name="tipos_datos_personales" value="email"> email</label>
+            <label class="checkbox-item"><input type="checkbox" name="tipos_datos_personales" value="telefono"> teléfono</label>
+            <label class="checkbox-item"><input type="checkbox" name="tipos_datos_personales" value="ubicacion"> ubicación</label>
+            <label class="checkbox-item"><input type="checkbox" name="tipos_datos_personales" value="salud"> salud</label>
+            <label class="checkbox-item"><input type="checkbox" name="tipos_datos_personales" value="financieros"> financieros</label>
+            <label class="checkbox-item"><input type="checkbox" name="tipos_datos_personales" value="ninguno"> ninguno</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="toggle-label">
+            <input type="checkbox" class="toggle-input" id="usa_ia" name="usa_ia">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            <span class="toggle-text">¿Usa inteligencia artificial?</span>
+          </label>
+        </div>
+
+        <div class="form-group" id="tipo_ia_wrapper" style="display:none;">
+          <label class="form-label" for="tipo_ia">Tipo de IA</label>
+          <select class="form-control" id="tipo_ia" name="tipo_ia">
+            <option value="generativa">Generativa</option>
+            <option value="clasificacion">Clasificación</option>
+            <option value="recomendacion">Recomendación</option>
+            <option value="agentes">Agentes</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="toggle-label">
+            <input type="checkbox" class="toggle-input" id="usa_cookies" name="usa_cookies">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            <span class="toggle-text">¿Usa cookies?</span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="ccaa">Comunidad autónoma</label>
+          <select class="form-control" id="ccaa" name="ccaa" required>
+            <option value="Andalucía">Andalucía</option>
+            <option value="Aragón">Aragón</option>
+            <option value="Asturias">Asturias</option>
+            <option value="Baleares">Baleares</option>
+            <option value="Canarias">Canarias</option>
+            <option value="Cantabria">Cantabria</option>
+            <option value="Castilla-La Mancha">Castilla-La Mancha</option>
+            <option value="Castilla y León">Castilla y León</option>
+            <option value="Cataluña">Cataluña</option>
+            <option value="Ceuta">Ceuta</option>
+            <option value="Extremadura">Extremadura</option>
+            <option value="Galicia">Galicia</option>
+            <option value="La Rioja">La Rioja</option>
+            <option value="Madrid">Madrid</option>
+            <option value="Melilla">Melilla</option>
+            <option value="Murcia">Murcia</option>
+            <option value="Navarra">Navarra</option>
+            <option value="País Vasco">País Vasco</option>
+            <option value="Valencia">Valencia</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="toggle-label">
+            <input type="checkbox" class="toggle-input" id="es_empresa" name="es_empresa">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            <span class="toggle-text">¿Es una empresa?</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--full">Analizar proyecto →</button>
+      </form>
+
+      <div class="demo__output" id="demo-output" style="display:none;"></div>
+    </div>
+  </div>
+</section>
+```
+
+- [ ] **Step 2: Add demo CSS**
+
+Append inside `<style>`:
+
+```css
+/* --- Demo --- */
+.demo { padding: var(--section-pad); }
+
+.demo__panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 32px;
+  max-width: 700px;
+}
+
+.form-group { margin-bottom: 20px; }
+
+.form-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.form-control {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 150ms;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.form-control:focus { border-color: var(--accent); }
+
+select.form-control {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: border-color 150ms;
+}
+.checkbox-item:hover { border-color: var(--muted); }
+.checkbox-item input[type="checkbox"] { accent-color: var(--accent); }
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+.toggle-input { display: none; }
+.toggle-track {
+  width: 40px;
+  height: 22px;
+  background: var(--border);
+  border-radius: 11px;
+  position: relative;
+  transition: background 200ms;
+  flex-shrink: 0;
+}
+.toggle-input:checked + .toggle-track { background: var(--accent); }
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  background: var(--text);
+  border-radius: 50%;
+  transition: left 200ms;
+}
+.toggle-input:checked + .toggle-track .toggle-thumb { left: 21px; }
+.toggle-text {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text);
+}
+
+.demo__output { margin-top: 32px; }
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 0.2; }
+  50%       { opacity: 1; }
+}
+.demo__loading {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted);
+  padding: 24px 0;
+}
+.demo__loading .dot { font-size: 18px; line-height: 1; }
+.demo__loading .dot:nth-child(1) { animation: dot-pulse 1.2s ease-in-out infinite; }
+.demo__loading .dot:nth-child(2) { animation: dot-pulse 1.2s ease-in-out 0.2s infinite; }
+.demo__loading .dot:nth-child(3) { animation: dot-pulse 1.2s ease-in-out 0.4s infinite; }
+.demo__loading .demo__loading-text { margin-left: 8px; }
+
+.response-panel {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.response-panel__header {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.response-panel__label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  margin-right: 4px;
+}
+.badge {
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+.response-panel__stat {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  margin-left: auto;
+}
+.response-panel__body {
+  background: var(--surface);
+  padding: 24px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.7;
+}
+.response-panel__body h1,
+.response-panel__body h2 {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+  margin: 20px 0 12px;
+}
+.response-panel__body h1:first-child,
+.response-panel__body h2:first-child { margin-top: 0; }
+.response-panel__body h3 {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 16px 0 8px;
+}
+.response-panel__body p { margin-bottom: 12px; }
+.response-panel__body ul,
+.response-panel__body ol { margin: 8px 0 12px 20px; }
+.response-panel__body li { margin-bottom: 4px; }
+.response-panel__body code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--accent);
+}
+.response-panel__body strong { font-weight: 600; }
+
+.response-panel__disclaimer {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 12px 16px;
+  margin-top: 16px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.demo__error {
+  border: 1px solid #ff4444;
+  border-radius: 6px;
+  padding: 16px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: #ff4444;
+  background: rgba(255,68,68,0.05);
+}
+```
+
+- [ ] **Step 3: Verify in browser**
+
+Reload. Expected: "Pruébalo ahora" section visible with styled form — dark panel, monospace uppercase labels, dark inputs with focus highlight, pill toggles, green checkbox accent, full-width green submit button. Toggle `usa_ia` should do nothing yet (JS not added).
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: demo form — HTML structure and complete CSS styling"
+```
+
+---
+
+## Task 5: Demo JavaScript
+
+**Files:**
+- Modify: `index.html` — fill the inline `<script>` block (before `</body>`)
+
+- [ ] **Step 1: Add JS inside the `<script>` block**
+
+Replace the empty `<script></script>` with:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  // Smooth scroll hero CTA → demo section
+  document.getElementById('hero-cta').addEventListener('click', function () {
+    document.getElementById('demo').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // Show/hide tipo_ia when usa_ia toggle changes
+  document.getElementById('usa_ia').addEventListener('change', function () {
+    document.getElementById('tipo_ia_wrapper').style.display = this.checked ? 'block' : 'none';
+  });
+
+  // --- Form submit ---
+  const form = document.getElementById('analyze-form');
+  const outputEl = document.getElementById('demo-output');
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function setState(state, data) {
+    outputEl.style.display = 'block';
+
+    if (state === 'loading') {
+      outputEl.innerHTML =
+        '<div class="demo__loading">' +
+          '<span class="dot">·</span>' +
+          '<span class="dot">·</span>' +
+          '<span class="dot">·</span>' +
+          '<span class="demo__loading-text">Analizando normativa...</span>' +
+        '</div>';
+      return;
+    }
+
+    if (state === 'error') {
+      outputEl.innerHTML =
+        '<div class="demo__error">⚠ Error: ' + escapeHtml(data.message) + '</div>';
+      return;
+    }
+
+    if (state === 'success') {
+      var badges = data.normativas_detectadas
+        .map(function (n) { return '<span class="badge">' + escapeHtml(n) + '</span>'; })
+        .join('');
+
+      outputEl.innerHTML =
+        '<div class="response-panel">' +
+          '<div class="response-panel__header">' +
+            '<span class="response-panel__label">normativas →</span>' +
+            badges +
+            '<span class="response-panel__stat">' + data.chunks_utilizados + ' chunks</span>' +
+          '</div>' +
+          '<div class="response-panel__body" id="response-body"></div>' +
+        '</div>';
+
+      document.getElementById('response-body').innerHTML =
+        marked.parse(data.respuesta_completa) +
+        '<div class="response-panel__disclaimer">⚠️ ' + escapeHtml(data.disclaimer) + '</div>';
+    }
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    setState('loading');
+
+    var fd = new FormData(form);
+    var tiposData = fd.getAll('tipos_datos_personales');
+
+    var payload = {
+      tipo_proyecto:              fd.get('tipo_proyecto'),
+      descripcion_breve:          fd.get('descripcion_breve') || '',
+      usa_ia:                     document.getElementById('usa_ia').checked,
+      tipo_ia:                    document.getElementById('usa_ia').checked ? fd.get('tipo_ia') : null,
+      usa_cookies:                document.getElementById('usa_cookies').checked,
+      ccaa:                       fd.get('ccaa'),
+      es_empresa:                 document.getElementById('es_empresa').checked,
+      tipos_datos_personales:     tiposData.length > 0 ? tiposData : ['ninguno'],
+      // Hidden constants
+      tiene_usuarios_registrados: true,
+      acceso_publico:             false,
+      usuarios_menores:           false,
+      usuarios_ue:                true,
+      transferencia_datos_terceros: false,
+      monetizacion:               null,
+      contenido_digital:          false,
+      colegiado:                  null
+    };
+
+    try {
+      var res = await fetch('https://legaldev-production.up.railway.app/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        var errBody = await res.json().catch(function () { return {}; });
+        throw new Error(errBody.detail || 'HTTP ' + res.status);
+      }
+
+      var data = await res.json();
+      setState('success', data);
+    } catch (err) {
+      setState('error', { message: err.message || 'Error de conexión. Inténtalo de nuevo.' });
+    }
+  });
+</script>
+```
+
+- [ ] **Step 2: Test smooth scroll**
+
+Reload. Click `Probar ahora →` in the hero. Expected: page smoothly scrolls to the demo section.
+
+- [ ] **Step 3: Test usa_ia toggle**
+
+Toggle the "¿Usa inteligencia artificial?" switch. Expected: "Tipo de IA" select appears when checked, disappears when unchecked.
+
+- [ ] **Step 4: Test form submission with live API**
+
+Fill in the form: select "App web", describe "Plataforma SaaS para facturas", check "email", check usa_ia (generativa), check usa_cookies, select "Asturias". Click "Analizar proyecto →".
+
+Expected:
+1. Loading state appears (`· · · Analizando normativa...` with animated dots)
+2. After ~5–10s: response panel appears with green normativa badges in header, markdown prose in body, disclaimer box at bottom
+3. No console errors
+
+- [ ] **Step 5: Test error state**
+
+Temporarily break the URL in the fetch call (e.g., add `-broken` to the hostname), submit the form.
+Expected: red-bordered error box with the error message.
+Restore the correct URL.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: demo JS — smooth scroll, usa_ia toggle, fetch + state machine + markdown rendering"
+```
+
+---
+
+## Task 6: Cómo funciona section
+
+**Files:**
+- Modify: `index.html` — add how-it-works HTML after demo section, add CSS inside `<style>`
+
+- [ ] **Step 1: Add HTML**
+
+Insert after the closing `</section>` of the demo:
+
+```html
+<!-- Cómo funciona -->
+<section class="how">
+  <div class="container">
+    <h2 class="section-title">Cómo funciona</h2>
+    <div class="how__steps">
+      <div class="how__step">
+        <div class="how__num">01</div>
+        <h3 class="how__step-title">Describes tu proyecto</h3>
+        <p class="how__step-desc">Rellena el cuestionario con los detalles técnicos: tipo de proyecto, datos que maneja, uso de IA, cookies, y más.</p>
+      </div>
+      <div class="how__connector" aria-hidden="true"></div>
+      <div class="how__step">
+        <div class="how__num">02</div>
+        <h3 class="how__step-title">Analizamos la normativa</h3>
+        <p class="how__step-desc">Nuestro sistema RAG busca en 16 documentos legales indexados — RGPD, EU AI Act, LOPDGDD, ENS, guías AEPD y más.</p>
+      </div>
+      <div class="how__connector" aria-hidden="true"></div>
+      <div class="how__step">
+        <div class="how__num">03</div>
+        <h3 class="how__step-title">Recibes implicaciones técnicas</h3>
+        <p class="how__step-desc">Obtienes una lista concreta de qué debes implementar, organizada por normativa, lista para llevar a código.</p>
+      </div>
+    </div>
+  </div>
+</section>
+```
+
+- [ ] **Step 2: Add CSS**
+
+Append inside `<style>`:
+
+```css
+/* --- How it works --- */
+.how {
+  padding: var(--section-pad);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.how__steps {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+.how__step {
+  flex: 1;
+  padding: 0 24px;
+}
+.how__step:first-child { padding-left: 0; }
+.how__step:last-child  { padding-right: 0; }
+.how__connector {
+  flex-shrink: 0;
+  width: 40px;
+  height: 1px;
+  border-top: 1px dashed var(--border);
+  margin-top: 16px;
+  align-self: flex-start;
+}
+.how__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+.how__step-title {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.how__step-desc {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+```
+
+- [ ] **Step 3: Verify in browser**
+
+Reload and scroll down. Expected: three-step row with circled green numbers, step titles in JetBrains Mono, dashed connectors between steps, slightly lighter background vs. main sections.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: cómo funciona section — 3-step flow with dashed connectors"
+```
+
+---
+
+## Task 7: Stack técnico section
+
+**Files:**
+- Modify: `index.html` — add stack HTML after how section, add CSS inside `<style>`
+
+- [ ] **Step 1: Add HTML**
+
+Insert after the closing `</section>` of the how section:
+
+```html
+<!-- Stack -->
+<section class="stack">
+  <div class="container">
+    <h2 class="section-title">Stack</h2>
+    <p class="section-subtitle">Las tecnologías que hacen funcionar LegalDev.</p>
+    <div class="stack__grid">
+      <div class="stack__card">
+        <span class="stack__name">FastAPI</span>
+        <span class="stack__role">Framework API y routing</span>
+      </div>
+      <div class="stack__card">
+        <span class="stack__name">ChromaDB</span>
+        <span class="stack__role">Vector store local persistente</span>
+      </div>
+      <div class="stack__card">
+        <span class="stack__name">LangChain</span>
+        <span class="stack__role">Orquestación RAG y cadenas LLM</span>
+      </div>
+      <div class="stack__card">
+        <span class="stack__name">Groq — llama-4-scout</span>
+        <span class="stack__role">Inferencia LLM de alta velocidad</span>
+      </div>
+      <div class="stack__card">
+        <span class="stack__name">sentence-transformers</span>
+        <span class="stack__role">Embeddings multilingües</span>
+      </div>
+      <div class="stack__card">
+        <span class="stack__name">Railway</span>
+        <span class="stack__role">Despliegue y hosting del servicio</span>
+      </div>
+    </div>
+  </div>
+</section>
+```
+
+- [ ] **Step 2: Add CSS**
+
+Append inside `<style>`:
+
+```css
+/* --- Stack --- */
+.stack { padding: var(--section-pad); }
+.stack__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.stack__card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 150ms;
+}
+.stack__card:hover { border-color: var(--accent); }
+.stack__name {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+.stack__role {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--muted);
+}
+```
+
+- [ ] **Step 3: Verify in browser**
+
+Reload and scroll. Expected: 3×2 grid of dark cards, JetBrains Mono tech names, muted Inter descriptions, green border on hover.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: stack section — 6-card grid with hover accent"
+```
+
+---
+
+## Task 8: Footer
+
+**Files:**
+- Modify: `index.html` — add footer HTML after stack section, add CSS inside `<style>`
+
+- [ ] **Step 1: Add HTML**
+
+Insert after the closing `</section>` of the stack section:
+
+```html
+<!-- Footer -->
+<footer class="footer">
+  <div class="container footer__inner">
+    <p class="footer__line">Construido por Gustavo Sobrado · Universidad de Oviedo</p>
+    <div class="footer__links">
+      <a href="https://github.com/gustavintavo8/legaldev" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://legaldev-production.up.railway.app/docs" target="_blank" rel="noopener">API Docs</a>
+    </div>
+    <p class="footer__disclaimer">Orientación informativa. No constituye asesoramiento legal.</p>
+  </div>
+</footer>
+```
+
+- [ ] **Step 2: Add CSS**
+
+Append inside `<style>`:
+
+```css
+/* --- Footer --- */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 0;
+}
+.footer__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+.footer__line {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--muted);
+}
+.footer__links {
+  display: flex;
+  gap: 20px;
+}
+.footer__links a {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--muted);
+  transition: color 150ms;
+}
+.footer__links a:hover { color: var(--text); }
+.footer__disclaimer {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--muted);
+  opacity: 0.7;
+}
+```
+
+- [ ] **Step 3: Verify in browser**
+
+Scroll to bottom. Expected: centered footer with author credit, GitHub + API Docs links (hover to `var(--text)`), small disclaimer text.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: footer — author credit, links, legal disclaimer"
+```
+
+---
+
+## Task 9: Responsive CSS
+
+**Files:**
+- Modify: `index.html` — append responsive media queries at the end of the `<style>` block
+
+- [ ] **Step 1: Add responsive CSS**
+
+Append at the very end of the `<style>` block:
+
+```css
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .how__steps {
+    flex-direction: column;
+    gap: 32px;
+  }
+  .how__connector { display: none; }
+  .how__step { padding: 0; }
+  .stack__grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .hero__ctas { flex-direction: column; }
+  .hero__ctas .btn { width: 100%; text-align: center; }
+  .stack__grid { grid-template-columns: 1fr; }
+  .demo__panel { padding: 20px; }
+  .section-title { font-size: 22px; }
+}
+```
+
+- [ ] **Step 2: Test on mobile viewport**
+
+In Chrome DevTools, toggle device toolbar. Test at 375px width (iPhone SE).
+
+Expected:
+- Hero: CTA buttons stack vertically, each full width
+- How it works: three steps stack vertically, connectors hidden
+- Stack: 1-column card grid
+- Demo form: comfortable padding, fields full width
+- Navbar: logo and link still visible
+
+- [ ] **Step 3: Test at 768px (tablet)**
+
+Expected:
+- Stack: 2-column grid
+- How it works: vertical stack with no connectors
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: responsive CSS — mobile and tablet breakpoints"
+```
+
+---
+
+## Task 10: Final verification
+
+**Files:** No changes expected — verification only. Fix anything found.
+
+- [ ] **Step 1: Full desktop walkthrough**
+
+Open `index.html` via `file://` in Chrome. Check each section top to bottom:
+- Navbar: sticky, logo renders `</legaldev>`, GitHub link works
+- Hero: animated grid visible (subtle), green glow, headline correct, `proyecto.` in green, CTAs render correctly
+- Demo: scroll-to on CTA click works, form fields all render, toggles animate, `tipo_ia` hides/shows on usa_ia toggle
+- How it works: three steps horizontal, dashed connectors visible
+- Stack: 3×2 grid, hover shows green border
+- Footer: all links render, disclaimer visible
+
+- [ ] **Step 2: Full API integration test**
+
+Fill the demo form fully. Submit. Verify:
+1. Loading state shows animated dots
+2. Response renders with green normativa badges
+3. Markdown headings render as styled JetBrains Mono headers
+4. `chunks_utilizados` count appears in header
+5. Disclaimer box appears at bottom of response
+6. No console errors
+
+- [ ] **Step 3: Check console for errors**
+
+Open DevTools → Console. Reload page. Expected: zero errors, zero warnings (fonts 404 would be a fail).
+
+- [ ] **Step 4: Verify Vercel deployment readiness**
+
+Confirm `vercel.json` exists at repo root alongside `index.html`. Both files committed.
+
+```bash
+ls index.html vercel.json
+```
+
+Expected: both files listed.
+
+- [ ] **Step 5: Final commit**
+
+```bash
+git add index.html
+git commit -m "fix: final polish from smoke test" --allow-empty
+```
+
+(Use `--allow-empty` only if no changes were needed; otherwise commit actual fixes normally.)
+
+---
+
+## Self-Review Notes
+
+**Spec coverage check:**
+- ✅ Navbar: `</legaldev>` logo, GitHub link (Task 2)
+- ✅ Hero: animated grid, green glow, headline, subheadline, 2 CTAs with correct hrefs (Task 3)
+- ✅ Demo form: all 8 visible fields, all hidden constants, live API POST, loading/success/error states, marked.js rendering, badges, chunk count, disclaimer (Tasks 4–5)
+- ✅ Cómo funciona: 3-step flow, dashed connectors, 16 documentos mention (Task 6)
+- ✅ Stack: all 6 tech cards with correct names and role descriptions (Task 7)
+- ✅ Footer: author, university, both links, disclaimer (Task 8)
+- ✅ Responsive: mobile 480px, tablet 768px (Task 9)
+- ✅ vercel.json (Task 0)
+- ✅ Google Fonts: JetBrains Mono + Inter (Task 0)
+- ✅ marked.js from CDN (Task 5)
+- ✅ No frameworks, all CSS in `<style>`, all JS in `<script>` (enforced throughout)
