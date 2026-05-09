@@ -90,9 +90,48 @@ select, input { font: inherit; }
 .btn--ghost:hover { border-color: var(--muted); }
 .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .btn--full { width: 100%; font-family: var(--font-mono); }
+
+/* --- Navbar --- */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  height: 56px;
+  display: flex;
+  align-items: center;
+}
+.navbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.navbar__logo {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.navbar__link {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--muted);
+  transition: color 150ms;
+}
+.navbar__link:hover { color: var(--text); }
   </style>
 </head>
 <body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container navbar__inner">
+      <a href="/" class="navbar__logo">&lt;/legaldev&gt;</a>
+      <a href="https://github.com/gustavintavo8/legaldev" class="navbar__link" target="_blank" rel="noopener">Ver en GitHub</a>
+    </div>
+  </nav>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
