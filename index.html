@@ -409,6 +409,33 @@ select.form-control {
   padding-bottom: 80px;
   max-width: 680px;
 }
+.hero__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+.hero__status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex-shrink: 0;
+  transition: background 300ms;
+}
+.hero__status--online .hero__status-dot {
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(0,208,132,0.6);
+}
+.hero__status--offline .hero__status-dot { background: #ff4444; }
+
 .hero__label {
   font-family: var(--font-mono);
   font-size: 12px;
@@ -595,6 +622,10 @@ select.form-control {
     <div class="hero__glow" aria-hidden="true"></div>
     <div class="container hero__content">
       <p class="hero__label">// análisis legal automático</p>
+      <div class="hero__status" id="api-status">
+        <span class="hero__status-dot"></span>
+        <span class="hero__status-text" id="api-status-text">Comprobando API...</span>
+      </div>
       <h1 class="hero__headline">Sabe qué leyes aplican a tu <span class="hero__accent">proyecto.</span></h1>
       <p class="hero__sub">Describe tu proyecto de software. LegalDev analiza RGPD, EU AI Act, LOPDGDD, ENS y más — y te dice exactamente qué implementar.</p>
       <div class="hero__ctas">
@@ -787,6 +818,24 @@ select.form-control {
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
+  (async function checkApiStatus() {
+    var statusEl = document.getElementById('api-status');
+    var statusText = document.getElementById('api-status-text');
+    try {
+      var res = await fetch('https://legaldev-production.up.railway.app/health');
+      if (res.ok) {
+        var data = await res.json();
+        statusEl.classList.add('hero__status--online');
+        statusText.textContent = '● API online · ' + data.docs_indexed.toLocaleString() + ' docs indexados';
+      } else {
+        throw new Error();
+      }
+    } catch (e) {
+      statusEl.classList.add('hero__status--offline');
+      statusText.textContent = '● API offline';
+    }
+  })();
+
   // Smooth scroll hero CTA → demo section
   document.getElementById('hero-cta').addEventListener('click', function () {
     document.getElementById('demo').scrollIntoView({ behavior: 'smooth' });
