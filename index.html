@@ -95,12 +95,18 @@ select, input { font: inherit; }
 /* --- Demo --- */
 .demo { padding: var(--section-pad); }
 
+.demo__layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
 .demo__panel {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 32px;
-  max-width: 700px;
 }
 
 .form-group { margin-bottom: 20px; }
@@ -204,7 +210,21 @@ select.form-control {
   color: var(--text);
 }
 
-.demo__output { margin-top: 32px; }
+.demo__output:empty {
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.demo__output:empty::before {
+  content: '// el análisis aparecerá aquí';
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  opacity: 0.4;
+}
 
 @keyframes dot-pulse {
   0%, 100% { opacity: 0.2; }
@@ -301,17 +321,6 @@ select.form-control {
 }
 .response-panel__body strong { font-weight: 600; }
 
-.response-panel__disclaimer {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 12px 16px;
-  margin-top: 16px;
-  font-family: var(--font-sans);
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.5;
-}
 
 .demo__error {
   border: 1px solid var(--error);
@@ -544,6 +553,11 @@ select.form-control {
 }
 
 /* --- Responsive --- */
+@media (max-width: 900px) {
+  .demo__layout { grid-template-columns: 1fr; }
+  .demo__output:empty { display: none; }
+}
+
 @media (max-width: 768px) {
   .how__steps {
     flex-direction: column;
@@ -593,7 +607,8 @@ select.form-control {
     <div class="container">
       <h2 class="section-title">Pruébalo ahora</h2>
       <p class="section-subtitle">Rellena el formulario y obtén las normativas aplicables a tu proyecto en segundos.</p>
-      <div class="demo__panel">
+      <div class="demo__layout">
+        <div class="demo__panel">
         <form class="demo__form" id="analyze-form" novalidate>
 
           <div class="form-group">
@@ -686,8 +701,8 @@ select.form-control {
 
           <button type="submit" class="btn btn--primary btn--full">Analizar proyecto →</button>
         </form>
-
-        <div class="demo__output" id="demo-output" style="display:none;"></div>
+        </div>
+        <div class="demo__output" id="demo-output"></div>
       </div>
     </div>
   </section>
@@ -789,8 +804,6 @@ select.form-control {
   }
 
   function setState(state, data) {
-    outputEl.style.display = 'block';
-
     if (state === 'loading') {
       outputEl.innerHTML =
         '<div class="demo__loading">' +
@@ -824,8 +837,7 @@ select.form-control {
         '</div>';
 
       document.getElementById('response-body').innerHTML =
-        marked.parse(data.respuesta_completa) +
-        '<div class="response-panel__disclaimer">⚠️ ' + escapeHtml(data.disclaimer) + '</div>';
+        marked.parse(data.respuesta_completa);
     }
   }
 
