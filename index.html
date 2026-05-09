@@ -826,7 +826,7 @@ select.form-control {
       if (res.ok) {
         var data = await res.json();
         statusEl.classList.add('hero__status--online');
-        statusText.textContent = '● API online · ' + data.docs_indexed.toLocaleString() + ' docs indexados';
+        statusText.textContent = 'API online · ' + data.docs_indexed.toLocaleString() + ' docs indexados';
       } else {
         throw new Error();
       }
