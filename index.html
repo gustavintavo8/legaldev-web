@@ -210,6 +210,8 @@ select.form-control {
   font-size: 14px;
   color: var(--text);
 }
+.toggle-input:disabled + .toggle-track { opacity: 0.35; cursor: not-allowed; }
+.toggle-input:disabled ~ .toggle-text  { opacity: 0.35; cursor: not-allowed; }
 
 .demo__output {
   max-width: 1000px;
