@@ -926,7 +926,7 @@ select.form-control {
     };
 
     try {
-      var res = await fetch('https://legaldev-production.up.railway.app/analyze', {
+      var res = await fetch('https://legaldev-production.up.railway.app/v1/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
