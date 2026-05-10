@@ -856,6 +856,16 @@ select.form-control {
     document.getElementById('tipo_ia_wrapper').style.display = this.checked ? 'block' : 'none';
   });
 
+  function syncColegiado() {
+    var colegiadoInput = document.getElementById('colegiado');
+    var esEmpresa = document.getElementById('es_empresa').checked;
+    colegiadoInput.disabled = esEmpresa;
+    if (esEmpresa) colegiadoInput.checked = false;
+  }
+
+  document.getElementById('es_empresa').addEventListener('change', syncColegiado);
+  syncColegiado();
+
   // --- Form submit ---
   var form = document.getElementById('analyze-form');
   var outputEl = document.getElementById('demo-output');
@@ -932,7 +942,7 @@ select.form-control {
       transferencia_datos_terceros: false,
       monetizacion:               null,
       contenido_digital:          false,
-      colegiado:                  null
+      colegiado:                  document.getElementById('colegiado').checked || null
     };
 
     try {
