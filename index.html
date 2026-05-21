@@ -645,7 +645,7 @@ select.form-control {
       <p class="hero__sub">Describe tu proyecto de software. LegalDev analiza RGPD, EU AI Act, LOPDGDD, ENS y más — y te dice exactamente qué implementar.</p>
       <div class="hero__ctas">
         <button class="btn btn--primary" id="hero-cta">Probar ahora →</button>
-        <a href="https://legaldev-production.up.railway.app/docs" class="btn btn--ghost" target="_blank" rel="noopener">Ver documentación</a>
+        <a href="https://gustavintavo8-legaldev.hf.space/docs" class="btn btn--ghost" target="_blank" rel="noopener">Ver documentación</a>
       </div>
     </div>
   </section>
@@ -820,7 +820,7 @@ select.form-control {
           <span class="stack__role">Embeddings multilingües</span>
         </div>
         <div class="stack__card">
-          <span class="stack__name">Railway</span>
+          <span class="stack__name">Hugging Face Spaces</span>
           <span class="stack__role">Despliegue y hosting del servicio</span>
         </div>
       </div>
@@ -833,7 +833,7 @@ select.form-control {
       <p class="footer__line">Construido por Gustavo Sobrado · Universidad de Oviedo</p>
       <div class="footer__links">
         <a href="https://github.com/gustavintavo8/legaldev" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://legaldev-production.up.railway.app/docs" target="_blank" rel="noopener">API Docs</a>
+        <a href="https://gustavintavo8-legaldev.hf.space/docs" target="_blank" rel="noopener">API Docs</a>
       </div>
       <p class="footer__disclaimer">Orientación informativa. No constituye asesoramiento legal.</p>
     </div>
@@ -841,11 +841,14 @@ select.form-control {
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
+  // NOTE: /docs hrefs on lines 648 and 836 also use this origin as a literal
+  const API_BASE = 'https://gustavintavo8-legaldev.hf.space';
+
   (async function checkApiStatus() {
     var statusEl = document.getElementById('api-status');
     var statusText = document.getElementById('api-status-text');
     try {
-      var res = await fetch('https://legaldev-production.up.railway.app/health');
+      var res = await fetch(API_BASE + '/health');
       if (res.ok) {
         var data = await res.json();
         statusEl.classList.add('hero__status--online');
@@ -959,7 +962,7 @@ select.form-control {
     };
 
     try {
-      var res = await fetch('https://legaldev-production.up.railway.app/v1/analyze', {
+      var res = await fetch(API_BASE + '/v1/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
