@@ -848,7 +848,7 @@ select.form-control {
     var statusEl = document.getElementById('api-status');
     var statusText = document.getElementById('api-status-text');
     try {
-      var res = await fetch(API_BASE + '/health');
+      var res = await fetch(API_BASE + '/health', { signal: AbortSignal.timeout(8000) });
       if (res.ok) {
         var data = await res.json();
         statusEl.classList.add('hero__status--online');
@@ -857,8 +857,12 @@ select.form-control {
         throw new Error();
       }
     } catch (e) {
-      statusEl.classList.add('hero__status--offline');
-      statusText.textContent = '● API offline';
+      if (e.name === 'TimeoutError') {
+        statusText.textContent = '● Despertando...';
+      } else {
+        statusEl.classList.add('hero__status--offline');
+        statusText.textContent = '● API offline';
+      }
     }
   })();
 
