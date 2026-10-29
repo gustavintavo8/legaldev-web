@@ -1,5 +1,6 @@
 import Demo from './components/Demo';
 import Hero from './components/Hero';
+import HowItWorks from './components/HowItWorks';
 import Nav from './components/Nav';
 import Report from './components/Report';
 import { useAnalysis } from './hooks/useAnalysis';
@@ -16,6 +17,7 @@ export default function App() {
         <Hero onExample={analysis.loadExample} />
         <Demo analysis={analysis} health={health} />
         <Report state={analysis.state} />
+        <HowItWorks />
       </main>
     </>
   );
