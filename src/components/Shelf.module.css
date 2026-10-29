@@ -83,7 +83,7 @@
   transition: background-color var(--ui-fast) var(--ease-out), color var(--ui-fast) var(--ease-out);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .spine:hover {
     background: #2b2b2b;
   }

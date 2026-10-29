@@ -36,7 +36,7 @@
   transition: text-decoration-color var(--ui-fast) var(--ease-out);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .exampleLink:hover {
     text-decoration-color: var(--ink);
   }
@@ -177,7 +177,7 @@ select.control {
   transition: transform var(--ui-fast) var(--ease-out), background-color var(--ui-fast) var(--ease-out);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .submit:hover:not(:disabled) {
     background: #dfeb2f;
   }

@@ -54,7 +54,7 @@
   transition: text-decoration-color var(--ui-fast) var(--ease-out);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .navTile a:hover,
   .links a:hover {
     text-decoration-color: var(--ink);
@@ -172,7 +172,7 @@
   transition: transform 220ms var(--ease-out);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .cta:hover {
     background: #dfeb2f;
   }

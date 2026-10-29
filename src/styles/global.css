@@ -9,6 +9,9 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* No translucent flash on tap; every control has its own :active state. */
+  -webkit-tap-highlight-color: transparent;
+  color-scheme: light;
 }
 
 body {
@@ -17,7 +20,19 @@ body {
   font: 400 var(--step-body) / 1.45 var(--font-text);
   letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
-  -webkit-tap-highlight-color: transparent;
+}
+
+/* Controls fire on tap without the double-tap wait and don't select their label on long-press. */
+button,
+summary,
+label:has(> input[type='checkbox']) {
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+a {
+  touch-action: manipulation;
 }
 
 a {
@@ -68,7 +83,13 @@ code {
   width: 100%;
   max-width: var(--max);
   margin-inline: auto;
-  padding-inline: var(--margin);
+  /* viewport-fit=cover: keep content clear of the notch in landscape. */
+  padding-left: max(var(--margin), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--margin), env(safe-area-inset-right, 0px));
+}
+
+pre {
+  overscroll-behavior: contain;
 }
 
 .title {

@@ -23,7 +23,7 @@
     transform var(--ui-fast) var(--ease-out);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .chip:hover .face {
     background: #e7e7e0;
   }

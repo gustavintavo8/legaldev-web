@@ -27,7 +27,7 @@
   transition: text-decoration-color var(--ui-fast) var(--ease-out);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .links a:hover {
     text-decoration-color: var(--ink);
   }
