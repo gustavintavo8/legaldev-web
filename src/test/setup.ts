@@ -1,6 +1,10 @@
 import '@testing-library/jest-dom/vitest';
 import { afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
+import { MotionGlobalConfig } from 'motion/react';
+
+// Animations jump to their end state so tests read final values.
+MotionGlobalConfig.skipAnimations = true;
 
 afterEach(() => cleanup());
 

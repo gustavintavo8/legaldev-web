@@ -1,0 +1,44 @@
+.chip {
+  display: inline-flex;
+  cursor: pointer;
+  user-select: none;
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.face {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  background: var(--paper);
+  font-size: 0.9375rem;
+  transition: background-color var(--ui-fast) var(--ease-out), color var(--ui-fast) var(--ease-out),
+    transform var(--ui-fast) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .chip:hover .face {
+    background: #e7e7e0;
+  }
+}
+
+.chip:active .face {
+  transform: scale(0.97);
+}
+
+.input:checked + .face {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.input:focus-visible + .face {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
