@@ -77,9 +77,17 @@
   align-self: start;
   position: sticky;
   top: 96px;
+  /* With all 22 laws detected the summary can outgrow a short screen. */
+  max-height: calc(100svh - 120px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+.emptyBody {
+  color: var(--ink-soft);
 }
 
 .example {
@@ -180,6 +188,44 @@
   font-size: var(--step-small);
   background: var(--paper-2);
   padding: 1px 5px;
+}
+
+/* Code and tables scroll inside themselves instead of widening the page. */
+.prose pre {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 16px;
+  background: var(--paper-2);
+  overflow-wrap: normal;
+  overscroll-behavior: contain;
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+  white-space: pre;
+}
+
+.prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  overflow-wrap: normal;
+  font-size: var(--step-small);
+}
+
+.prose th,
+.prose td {
+  padding: 8px 14px 8px 0;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid #e2e2db; /* taste-skill-ignore: real table */
+}
+
+.prose th {
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .prose hr {

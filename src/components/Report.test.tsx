@@ -70,6 +70,19 @@ it('sin citas no muestra «0 de 0»', () => {
   expect(screen.queryByText(/0 de 0/)).not.toBeInTheDocument();
 });
 
+it('pluraliza con una sola cita y un solo fragmento', async () => {
+  const data = { respuesta_completa: '## RGPD', normativas_detectadas: ['RGPD'], chunks_utilizados: 1, citas: { total: 1, verificadas: 1, no_verificadas: [] } };
+  render(<Report state={ok(data)} />);
+  await waitFor(() => expect(screen.getByText(/de 1 cita encontrada literalmente en la ley$/)).toHaveTextContent('1 de 1 cita'));
+  expect(screen.getByText(/^1 fragmento de la ley usado/)).toBeInTheDocument();
+});
+
+it('avisa si el informe llega sin texto', () => {
+  const data = { respuesta_completa: '  ', normativas_detectadas: [], chunks_utilizados: 0 };
+  render(<Report state={ok(data)} />);
+  expect(screen.getByText('El servidor no ha devuelto el texto del informe.')).toBeInTheDocument();
+});
+
 it('muestra el error sin emoji', () => {
   render(<Report state={{ kind: 'error', message: 'Demasiadas consultas: espera un minuto y vuelve a intentarlo.' }} />);
   const alert = screen.getByRole('alert');

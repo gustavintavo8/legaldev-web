@@ -47,7 +47,8 @@ function Success({ data, ejemplo }: { data: RAGResponse; ejemplo: boolean }) {
         {citas &&
           (citas.total > 0 ? (
             <p className={styles.figure}>
-              <CountUp value={citas.verificadas} /> de {citas.total} citas encontradas literalmente en la ley
+              <CountUp value={citas.verificadas} /> de {citas.total}{' '}
+              {citas.total === 1 ? 'cita encontrada' : 'citas encontradas'} literalmente en la ley
             </p>
           ) : (
             <p className={styles.figure}>Este informe no contiene citas literales</p>
@@ -62,7 +63,8 @@ function Success({ data, ejemplo }: { data: RAGResponse; ejemplo: boolean }) {
         )}
 
         <p className={styles.meta}>
-          {data.chunks_utilizados} fragmentos de la ley usados
+          {data.chunks_utilizados}{' '}
+          {data.chunks_utilizados === 1 ? 'fragmento de la ley usado' : 'fragmentos de la ley usados'}
           {corpus && <> · corpus {corpus}</>}
         </p>
 
@@ -75,7 +77,11 @@ function Success({ data, ejemplo }: { data: RAGResponse; ejemplo: boolean }) {
       </header>
 
       <div className={styles.content}>
-        <Body markdown={data.respuesta_completa} unverified={citas?.no_verificadas ?? []} />
+        {data.respuesta_completa.trim() ? (
+          <Body markdown={data.respuesta_completa} unverified={citas?.no_verificadas ?? []} />
+        ) : (
+          <p className={styles.emptyBody}>El servidor no ha devuelto el texto del informe.</p>
+        )}
         {disclaimer && <p className={styles.disclaimer}>{stripLeadingEmoji(disclaimer)}</p>}
       </div>
     </article>
