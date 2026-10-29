@@ -3,6 +3,7 @@ import Hero from './components/Hero';
 import HowItWorks from './components/HowItWorks';
 import Nav from './components/Nav';
 import Report from './components/Report';
+import Shelf from './components/Shelf';
 import { useAnalysis } from './hooks/useAnalysis';
 import { useHealth } from './hooks/useHealth';
 
@@ -18,6 +19,7 @@ export default function App() {
         <Demo analysis={analysis} health={health} />
         <Report state={analysis.state} />
         <HowItWorks />
+        <Shelf />
       </main>
     </>
   );
