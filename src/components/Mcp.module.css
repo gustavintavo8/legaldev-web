@@ -1,0 +1,56 @@
+.section {
+  padding-block: var(--section-gap);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: 48px;
+  align-items: start;
+}
+
+.copy {
+  grid-column: 1 / span 5;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.status {
+  align-self: flex-start;
+  padding: 8px 12px;
+  background: var(--hl);
+  color: var(--ink);
+  font-size: var(--step-small);
+  font-weight: 500;
+}
+
+.fragment {
+  grid-column: 7 / span 6;
+  min-width: 0;
+}
+
+.caption {
+  margin-bottom: 12px;
+  font-size: var(--step-small);
+  color: #b9b9b2;
+}
+
+.code {
+  overflow: auto;
+  padding: 24px;
+  background: #1d1d1d;
+  color: #ecece6;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 1023px) {
+  .copy,
+  .fragment {
+    grid-column: 1 / -1;
+  }
+}

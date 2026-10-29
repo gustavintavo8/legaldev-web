@@ -1,6 +1,8 @@
 import Demo from './components/Demo';
+import Footer from './components/Footer';
 import Hero from './components/Hero';
 import HowItWorks from './components/HowItWorks';
+import Mcp from './components/Mcp';
 import Nav from './components/Nav';
 import Report from './components/Report';
 import Shelf from './components/Shelf';
@@ -20,7 +22,9 @@ export default function App() {
         <Report state={analysis.state} />
         <HowItWorks />
         <Shelf />
+        <Mcp />
       </main>
+      <Footer />
     </>
   );
 }
