@@ -1,0 +1,25 @@
+:root {
+  --paper: #ffffff;
+  --paper-2: #f3f3ef;
+  --ink: #111111;
+  --ink-soft: #5a5a54;
+  --hl: #e9f542;
+  --error: #b42318;
+
+  --font-text: 'Hanken Grotesk', system-ui, sans-serif;
+  --font-law: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-code: ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --step-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --step-head: clamp(2rem, 1.3rem + 3.2vw, 4rem);
+  --step-display: clamp(52px, 5.2vw, 80px);
+
+  --margin: clamp(20px, 3.2vw, 48px);
+  --max: 1440px;
+  --section-gap: clamp(120px, 14vw, 200px);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ui-fast: 160ms;
+}
