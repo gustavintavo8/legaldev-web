@@ -9,7 +9,7 @@
 }
 
 .wordmark {
-  font-size: 1.25rem;
+  font-size: var(--step-body);
   font-weight: 500;
   letter-spacing: -0.03em;
   text-decoration: none;
@@ -18,19 +18,18 @@
 .links {
   display: flex;
   gap: clamp(16px, 2.4vw, 36px);
-  font-size: 0.9375rem;
+  font-size: var(--step-small);
 }
 
 .links a {
-  text-decoration: none;
-  background-image: none;
-  box-shadow: inset 0 -2px 0 transparent;
-  transition: box-shadow var(--ui-fast) var(--ease-out);
+  text-decoration: underline 2px transparent;
+  text-underline-offset: 6px;
+  transition: text-decoration-color var(--ui-fast) var(--ease-out);
 }
 
 @media (hover: hover) {
   .links a:hover {
-    box-shadow: inset 0 -2px 0 var(--hl);
+    text-decoration-color: var(--ink);
   }
 }
 

@@ -26,7 +26,7 @@ describe('pie', () => {
     expect(screen.getByText('Aviso')).toBeInTheDocument();
     expect(screen.queryByText('Aviso legal')).not.toBeInTheDocument();
     const disclaimer = screen.getByText(/^Esta información es orientativa/);
-    expect(disclaimer.textContent).not.toContain('⚠');
+    expect(disclaimer.textContent).not.toContain('⚠'); // taste-skill-ignore: asserts the emoji is stripped
   });
 
   it('muestra Gijón con la hora local', () => {

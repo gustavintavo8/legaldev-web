@@ -33,7 +33,7 @@ it('avisa de que lo ha redactado un modelo de lenguaje', () => {
 it('muestra el disclaimer sin emoji', () => {
   render(<Report state={ok()} />);
   const disclaimer = screen.getByText(/^Esta información es orientativa/);
-  expect(disclaimer.textContent).not.toContain('⚠');
+  expect(disclaimer.textContent).not.toContain('⚠'); // taste-skill-ignore: asserts the emoji is stripped
 });
 
 it('marca las 10 citas comprobadas del informe real', () => {
@@ -74,7 +74,7 @@ it('muestra el error sin emoji', () => {
   render(<Report state={{ kind: 'error', message: 'Demasiadas consultas: espera un minuto y vuelve a intentarlo.' }} />);
   const alert = screen.getByRole('alert');
   expect(alert).toHaveTextContent('Demasiadas consultas');
-  expect(alert.textContent).not.toContain('⚠');
+  expect(alert.textContent).not.toContain('⚠'); // taste-skill-ignore: asserts the emoji is stripped
 });
 
 it('muestra el progreso mientras carga', () => {

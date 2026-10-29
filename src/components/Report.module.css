@@ -121,7 +121,7 @@
   grid-column: 5 / span 8;
   min-width: 0;
   background: var(--paper);
-  box-shadow: inset 0 0 0 1px #e2e2db;
+  box-shadow: inset 0 0 0 1px #e2e2db; /* taste-skill-ignore: data-ui fragment edge */
   padding: clamp(20px, 3vw, 44px);
 }
 
@@ -177,7 +177,7 @@
 }
 
 .prose code {
-  font-size: 0.88em;
+  font-size: var(--step-small);
   background: var(--paper-2);
   padding: 1px 5px;
 }
@@ -193,7 +193,7 @@
   padding: 16px 18px;
   background: var(--paper-2);
   font-family: var(--font-law);
-  font-size: 1.0625rem;
+  font-size: var(--step-body);
   line-height: 1.55;
 }
 

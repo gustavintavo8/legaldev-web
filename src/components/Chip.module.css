@@ -8,7 +8,7 @@
   position: absolute;
   opacity: 0;
   width: 1px;
-  height: 1px;
+  height: 1px; /* taste-skill-ignore: visually hidden input */
   pointer-events: none;
 }
 
@@ -18,7 +18,7 @@
   min-height: 40px;
   padding: 0 14px;
   background: var(--paper);
-  font-size: 0.9375rem;
+  font-size: var(--step-small);
   transition: background-color var(--ui-fast) var(--ease-out), color var(--ui-fast) var(--ease-out),
     transform var(--ui-fast) var(--ease-out);
 }

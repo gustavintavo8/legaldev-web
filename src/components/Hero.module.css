@@ -29,7 +29,7 @@
 .sub {
   margin-top: 36px;
   max-width: 40ch;
-  font-size: 1.125rem;
+  font-size: var(--step-body);
 }
 
 .actions {
@@ -102,11 +102,14 @@
   position: relative;
   width: min(640px, calc(100% - var(--margin) - 96px));
   background: #fff;
-  padding: 26px 32px 40px;
+  padding: 28px 36px 40px;
   font-family: var(--font-law);
-  font-size: 0.9375rem;
+  font-size: var(--step-body);
   line-height: 1.5;
   color: var(--ink-soft);
+  /* The stage crops the page anyway; clipping only vertically keeps the margin note visible. */
+  max-height: 130svh;
+  overflow: visible clip;
 }
 
 .sheetHead {
@@ -116,8 +119,8 @@
   gap: 12px;
   padding-bottom: 8px;
   margin-bottom: 18px;
-  border-bottom: 1px solid var(--ink);
-  font-size: 0.8125rem;
+  border-bottom: 1px solid var(--ink); /* taste-skill-ignore: data-ui gazette header rule */
+  font-size: var(--step-small);
   color: var(--ink);
 }
 
@@ -129,8 +132,8 @@
 
 .lang {
   padding: 0 4px;
-  border: 1px solid var(--ink);
-  font-size: 0.75rem;
+  border: 1px solid var(--ink); /* taste-skill-ignore: data-ui gazette language box */
+  font-size: inherit;
 }
 
 .recital {
@@ -186,8 +189,11 @@
   padding: 18px 20px;
   background: var(--ink);
   color: var(--paper);
-  font-size: 0.9375rem;
+  font-family: var(--font-text);
+  font-size: var(--step-small);
   line-height: 1.45;
+  text-align: left;
+  hyphens: manual;
 }
 
 .note p + p,
@@ -235,11 +241,14 @@
   }
 
   .sheetWrap {
-    inset: 40px auto auto var(--margin);
+    inset: 40px auto 0 var(--margin);
   }
 
+  /* The stage crops the page; the element itself stops there too. */
   .sheet {
     width: 600px;
+    max-height: 100%;
+    overflow: hidden;
   }
 
   .anchor {
@@ -263,7 +272,7 @@
 
   .sub {
     margin-top: 24px;
-    font-size: 1.0625rem;
+    font-size: var(--step-body);
   }
 
   .sheetWrap {
@@ -274,7 +283,6 @@
   .sheet {
     width: calc(100vw - 32px);
     padding: 18px 18px 28px;
-    font-size: 0.875rem;
   }
 
   .recital {
@@ -282,8 +290,8 @@
   }
 
   .sheetHead {
-    gap: 8px;
-    font-size: 0.6875rem;
+    flex-wrap: wrap;
+    gap: 2px 12px;
     white-space: nowrap;
   }
 

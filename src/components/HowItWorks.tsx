@@ -26,6 +26,8 @@ const EMBUDO: [string, string][] = [
 
 const ENTRADA = JSON.stringify(EJEMPLO.entrada, null, 2);
 
+const STACK = ['FastAPI', 'ChromaDB', 'LangChain', 'Groq (gpt-oss-120b)', 'sentence-transformers', 'Hugging Face Spaces'];
+
 export default function HowItWorks() {
   const citas = EJEMPLO.respuesta.citas!;
   return (
@@ -133,7 +135,13 @@ export default function HowItWorks() {
         </div>
 
         <Reveal as="p" className={styles.stack}>
-          Construido con FastAPI · ChromaDB · LangChain · Groq (gpt-oss-120b) · sentence-transformers · Hugging Face Spaces
+          Construido con{' '}
+          {STACK.map((t, i) => (
+            <span key={t}>
+              <span className={styles.nowrap}>{t}</span>
+              {i < STACK.length - 1 ? ' · ' : ''}
+            </span>
+          ))}
         </Reveal>
       </div>
     </section>

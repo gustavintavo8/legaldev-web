@@ -51,7 +51,7 @@
   overflow: auto;
   padding: 20px;
   background: var(--paper-2);
-  font-size: 0.875rem;
+  font-size: var(--step-small);
   line-height: 1.55;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -65,12 +65,12 @@
 
 .panel {
   background: var(--paper);
-  box-shadow: inset 0 0 0 1px #e2e2db;
+  box-shadow: inset 0 0 0 1px #e2e2db; /* taste-skill-ignore: data-ui fragment edge */
   padding: 24px 28px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  font-size: 0.9375rem;
+  font-size: var(--step-body);
 }
 
 .panelTitle {
@@ -133,7 +133,7 @@
   min-width: 300px;
   padding: 14px 18px;
   background: var(--paper-2);
-  font-size: 0.9375rem;
+  font-size: var(--step-body);
 }
 
 .funnel li:last-child {
@@ -163,7 +163,7 @@
 .quoteText {
   align-self: flex-start;
   font-family: var(--font-law);
-  font-size: 1.0625rem;
+  font-size: var(--step-body);
   line-height: 1.55;
   background: var(--hl);
   box-decoration-break: clone;
@@ -178,6 +178,10 @@
 
 .panel b {
   font-weight: 500;
+}
+
+.nowrap {
+  white-space: nowrap;
 }
 
 .stack {

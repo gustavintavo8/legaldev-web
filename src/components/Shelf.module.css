@@ -105,7 +105,7 @@
   bottom: 10px;
   writing-mode: vertical-rl;
   transform: translateX(-50%) rotate(180deg);
-  font-size: 0.8125rem;
+  font-size: var(--step-small);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -190,9 +190,14 @@
 
   .spine {
     flex: none;
-    width: var(--w);
+    /* Never narrower than its label. */
+    width: max(var(--w), 9rem);
     height: 40px;
     transform-origin: left center;
+  }
+
+  .group:nth-child(4) .spines {
+    width: auto;
   }
 
   .spineLabel {

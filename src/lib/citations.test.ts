@@ -44,5 +44,5 @@ it('sin no verificadas, todas quedan verificadas', () => {
 });
 
 it('quita el emoji inicial del aviso', () => {
-  expect(stripLeadingEmoji('⚠️ Esta información es orientativa')).toBe('Esta información es orientativa');
+  expect(stripLeadingEmoji('⚠️ Esta información es orientativa')).toBe('Esta información es orientativa'); // taste-skill-ignore: input of the strip test
 });

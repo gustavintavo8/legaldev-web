@@ -43,8 +43,8 @@
   overflow: auto;
   padding: 24px;
   background: #1d1d1d;
-  color: #ecece6;
-  font-size: 0.875rem;
+  color: #ececec;
+  font-size: var(--step-small);
   line-height: 1.6;
 }
 

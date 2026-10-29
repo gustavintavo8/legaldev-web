@@ -8,7 +8,7 @@
 
   --font-text: 'Hanken Grotesk', system-ui, sans-serif;
   --font-law: 'Source Serif 4', Georgia, 'Times New Roman', serif;
-  --font-code: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  --font-code: ui-monospace, 'Cascadia Code', Consolas, monospace; /* taste-skill-ignore: real code only */
 
   --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
   --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
