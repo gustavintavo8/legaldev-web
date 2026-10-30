@@ -44,6 +44,23 @@ it('marca las 10 citas comprobadas del informe real', () => {
   expect(container.querySelectorAll('blockquote[data-cita="no-verificada"]')).toHaveLength(3);
 });
 
+it('pinta el subrayado de cada cita comprobada cuando se ve, y nunca el de las no comprobadas', async () => {
+  // Without IntersectionObserver every verified quote is swept at once.
+  vi.stubGlobal('IntersectionObserver', undefined);
+  const { container } = render(<Report state={ok()} />);
+  await waitFor(() => expect(container.querySelectorAll('blockquote[data-swept]')).toHaveLength(10));
+  expect(container.querySelectorAll('blockquote[data-cita="no-verificada"][data-swept]')).toHaveLength(0);
+  vi.unstubAllGlobals();
+});
+
+it('el barrido va sobre un bloque que contiene la cita entera, no sobre el párrafo en línea', () => {
+  const { container } = render(<Report state={ok()} />);
+  const q = container.querySelector('blockquote[data-cita="verificada"]')!;
+  const wrapper = q.querySelector(':scope > div');
+  expect(wrapper).not.toBeNull();
+  expect(wrapper!.querySelector(':scope > p')?.textContent?.trim()).toBe(q.textContent?.trim());
+});
+
 it('no marca nada si no puede casar las no verificadas', () => {
   const data = { ...EJEMPLO.respuesta, citas: { total: 13, verificadas: 12, no_verificadas: ['frase que no aparece'] } };
   const { container } = render(<Report state={ok(data)} />);

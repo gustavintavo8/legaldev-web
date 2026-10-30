@@ -1,4 +1,6 @@
+import { type CSSProperties, useRef } from 'react';
 import { EJEMPLO } from '../data/example';
+import { useSeen } from '../hooks/useSeen';
 import styles from './HowItWorks.module.css';
 import Reveal from './Reveal';
 
@@ -30,6 +32,10 @@ const STACK = ['FastAPI', 'ChromaDB', 'LangChain', 'Groq (gpt-oss-120b)', 'sente
 
 export default function HowItWorks() {
   const citas = EJEMPLO.respuesta.citas!;
+  const rulesRef = useRef<HTMLDivElement>(null);
+  const funnelRef = useRef<HTMLOListElement>(null);
+  const rulesSeen = useSeen(rulesRef);
+  const funnelSeen = useSeen(funnelRef);
   return (
     <section id="como-funciona" className={styles.section} aria-labelledby="como-funciona-title">
       <div className="wrap">
@@ -53,12 +59,13 @@ export default function HowItWorks() {
           <Reveal delay={0.14} className={styles.response}>
             <div className={styles.panel} data-ui>
               <p className={styles.panelTitle}>Antes de buscar, las reglas deciden qué normas entran seguro y cuáles no.</p>
-              <div className={styles.rules}>
+              {/* The rules act in front of you: first the strike-throughs draw, then the marks. */}
+              <div ref={rulesRef} className={styles.rules} data-draw data-seen={rulesSeen || undefined}>
                 <div>
                   <p className={styles.rulesHead}>Descartadas</p>
                   <ul aria-label="Normas descartadas">
-                    {DESCARTADAS.map(([n, why]) => (
-                      <li key={n}>
+                    {DESCARTADAS.map(([n, why], i) => (
+                      <li key={n} style={{ '--i': i } as CSSProperties}>
                         <s>{n}</s>
                         <span>{why}</span>
                       </li>
@@ -68,8 +75,8 @@ export default function HowItWorks() {
                 <div>
                   <p className={styles.rulesHead}>Garantizadas</p>
                   <ul aria-label="Normas garantizadas">
-                    {GARANTIZADAS.map(([n, why]) => (
-                      <li key={n}>
+                    {GARANTIZADAS.map(([n, why], i) => (
+                      <li key={n} style={{ '--i': DESCARTADAS.length + i } as CSSProperties}>
                         <b>{n}</b>
                         <span>{why}</span>
                       </li>
@@ -91,9 +98,16 @@ export default function HowItWorks() {
             </Reveal>
           </div>
           <Reveal delay={0.14} className={styles.response}>
-            <ol className={styles.funnel} aria-label="Recuperación de fragmentos" data-ui>
+            {/* The funnel filters: every bar starts at full width and narrows to its own. */}
+            <ol
+              ref={funnelRef}
+              className={styles.funnel}
+              aria-label="Recuperación de fragmentos"
+              data-ui
+              data-seen={funnelSeen || undefined}
+            >
               {EMBUDO.map(([n, label], i) => (
-                <li key={n} style={{ ['--w' as string]: `${100 - i * 14}%` }}>
+                <li key={n} style={{ '--w': `${100 - i * 14}%`, '--s': (100 - i * 14) / 100, '--i': i } as CSSProperties}>
                   <span className={styles.funnelNum}>{n}</span>
                   <span>{label}</span>
                 </li>

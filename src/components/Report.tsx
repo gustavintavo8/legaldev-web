@@ -4,6 +4,7 @@ import { EJEMPLO } from '../data/example';
 import type { AnalysisState } from '../hooks/useAnalysis';
 import { markCitations, stripLeadingEmoji } from '../lib/citations';
 import { renderMarkdown } from '../lib/markdown';
+import { observeOnce } from '../lib/observeOnce';
 import type { CitationStats, RAGResponse } from '../lib/types';
 import CountUp from './CountUp';
 import styles from './Report.module.css';
@@ -71,6 +72,33 @@ function Body({ markdown, citas }: { markdown: string; citas: CitationStats | un
       { duration: 0.45, ease: EASE, delay: stagger(0.045) },
     );
   }, [html, reduce]);
+
+  // The hero's gesture, on the real output: each verified quote is highlighted
+  // as it comes on screen (CSS in Report.module.css, keyed on data-swept).
+  useEffect(() => {
+    if (!ref.current) return;
+    const verified = Array.from(ref.current.querySelectorAll('blockquote[data-cita="verificada"]'));
+    // clip-path on the inline, multi-line highlighted <p> clips to its first
+    // line in Chromium, so the sweep runs on a block wrapper around it.
+    for (const q of verified) {
+      const p = q.querySelector(':scope > p');
+      if (!p || p.parentElement?.classList.contains(styles.trazo)) continue;
+      const trazo = document.createElement('div');
+      trazo.className = styles.trazo;
+      p.replaceWith(trazo);
+      trazo.append(p);
+    }
+    // Starts once a third of the quote is in view, so its empty box never shows for long.
+    return observeOnce(
+      verified,
+      (batch) =>
+        batch.forEach((q, i) => {
+          (q as HTMLElement).style.setProperty('--sweep-delay', `${i * 90}ms`);
+          (q as HTMLElement).dataset.swept = '';
+        }),
+      0.35,
+    );
+  }, [html, citas]);
 
   return <div ref={ref} className={styles.prose} dangerouslySetInnerHTML={{ __html: html }} />;
 }

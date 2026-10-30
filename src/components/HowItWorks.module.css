@@ -101,16 +101,60 @@
   margin-top: 6px;
 }
 
+/* The rules act once the block is seen: each strike-through draws left to
+   right, then each guaranteed law gets its mark (120 ms apart, --i). Drawn
+   with clip-path; the text itself never moves or hides. */
 .rules s {
-  text-decoration-thickness: 2px;
+  position: relative;
+  align-self: flex-start;
+  text-decoration: none;
   color: var(--ink-soft);
 }
 
+.rules s::after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: 54%;
+  height: 2px; /* taste-skill-ignore: a strike-through, not a divider */
+  background: currentColor;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 300ms var(--ease-out) calc(var(--i) * 120ms);
+}
+
+.rules[data-seen] s::after {
+  clip-path: inset(0 0 0 0);
+}
+
 .rules b {
+  position: relative;
+  isolation: isolate;
   font-weight: 500;
   align-self: flex-start;
-  background: var(--hl);
   padding: 0 3px;
+}
+
+.rules b::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--hl);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 300ms var(--ease-out) calc(var(--i) * 120ms);
+}
+
+.rules[data-seen] b::before {
+  clip-path: inset(0 0 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rules s::after,
+  .rules b::before {
+    clip-path: none;
+    transition: none;
+  }
 }
 
 .rules li span {
@@ -124,7 +168,16 @@
   gap: 6px;
 }
 
+/* The funnel filters: once seen, every bar starts at the full width and
+   narrows to its own (80 ms apart, --i). The bar is a pseudo-element scaled
+   from the left; the text stays put. */
+.funnel {
+  overflow-x: clip;
+}
+
 .funnel li {
+  position: relative;
+  isolation: isolate;
   display: grid;
   grid-template-columns: 96px 1fr;
   align-items: baseline;
@@ -132,12 +185,33 @@
   width: var(--w);
   min-width: 300px;
   padding: 14px 18px;
-  background: var(--paper-2);
   font-size: var(--step-body);
 }
 
-.funnel li:last-child {
+.funnel li::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--paper-2);
+  transform-origin: left center;
+  transform: scaleX(calc(1 / var(--s)));
+  transition: transform 500ms var(--ease-in-out) calc(var(--i) * 80ms);
+}
+
+.funnel[data-seen] li::before {
+  transform: none;
+}
+
+.funnel li:last-child::before {
   background: var(--hl);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .funnel li::before {
+    transform: none;
+    transition: none;
+  }
 }
 
 .funnelNum {
@@ -213,6 +287,12 @@
     width: 100%;
     min-width: 0;
     grid-template-columns: 72px 1fr;
+  }
+
+  /* Bars are full width on phones: nothing to narrow. */
+  .funnel li::before {
+    transform: none;
+    transition: none;
   }
 
   .exchange + .exchange {

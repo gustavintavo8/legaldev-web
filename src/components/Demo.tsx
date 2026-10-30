@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react';
-import { type FormEvent, useEffect, useId, useState } from 'react';
+import { type FormEvent, useId, useState } from 'react';
 import type { Analysis } from '../hooks/useAnalysis';
 import type { HealthView } from '../hooks/useHealth';
 import { DEFAULT_VALUES, type FormValues } from '../lib/payload';
@@ -106,15 +106,16 @@ export default function Demo({ analysis, health }: Props) {
   const loading = state.kind === 'loading';
 
   // Loading the example can change answers hidden under «Más detalles»; show them
-  // so they don't travel unseen with the user's next analysis.
-  useEffect(() => {
-    if (state.kind !== 'success' || !state.ejemplo) return;
+  // so they don't travel unseen with the user's next analysis. Done during render
+  // (derived state), not in an effect: the panel must be open in the same commit
+  // that mounts the report, or it grows after the scroll to the report has aimed.
+  const [lastState, setLastState] = useState(state);
+  if (state !== lastState) {
+    setLastState(state);
     const hiddenChanged =
       DETALLES.some(([key]) => values[key] !== DEFAULT_VALUES[key]) || values.monetizacion !== DEFAULT_VALUES.monetizacion;
-    if (hiddenChanged) setDetails(true);
-    // Only when a new example lands, not on every edit.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+    if (state.kind === 'success' && state.ejemplo && hiddenChanged) setDetails(true);
+  }
 
   const set = <K extends keyof FormValues>(key: K, value: FormValues[K]) => setValues({ ...values, [key]: value });
 
