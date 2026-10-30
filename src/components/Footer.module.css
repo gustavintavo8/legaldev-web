@@ -51,7 +51,7 @@
 .links a {
   text-decoration: underline 2px transparent;
   text-underline-offset: 5px;
-  transition: text-decoration-color var(--ui-fast) var(--ease-out);
+  transition: text-decoration-color var(--ui-fast) ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -184,6 +184,13 @@
 
 .cta:active .arrow {
   transform: translate(2px, -2px) scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta:hover .arrow,
+  .cta:active .arrow {
+    transform: none;
+  }
 }
 
 @media (max-width: 1023px) {

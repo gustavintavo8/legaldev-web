@@ -22,8 +22,8 @@ export default function Reveal({ children, as = 'div', delay = 0, className }: P
     <Tag
       ref={ref as never}
       className={className}
-      initial={reduce ? false : { opacity: 0, y: 20 }}
-      animate={shown ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      initial={reduce ? false : { opacity: 0, transform: 'translateY(20px)' }}
+      animate={shown ? { opacity: 1, transform: 'translateY(0px)' } : { opacity: 0, transform: 'translateY(20px)' }}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay }}
     >
       {children}

@@ -67,7 +67,7 @@
   text-decoration-thickness: 2px;
   text-underline-offset: 5px;
   text-decoration-color: var(--hl);
-  transition: text-decoration-color var(--ui-fast) var(--ease-out);
+  transition: text-decoration-color var(--ui-fast) ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -86,16 +86,48 @@
   clip-path: polygon(96px 0, 100% 0, 100% 100%, 0 100%, 0 96px);
 }
 
+/* Signature move, once at load, in CSS so it stays smooth while the page loads:
+   field 0–0.7 s, sheet from 0.25 s, highlight from 0.75 s, note at 1.35 s. */
+@keyframes shutter {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ink {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
 .field {
   position: absolute;
   inset: 0;
   background: var(--hl);
-  transform-origin: left center;
+  animation: shutter 700ms var(--ease-out) both;
 }
 
 .sheetWrap {
   position: absolute;
   inset: 72px 0 0 56px;
+  animation: rise 500ms var(--ease-out) 250ms both;
 }
 
 .sheet {
@@ -166,12 +198,14 @@
   isolation: isolate;
 }
 
+/* A marker drawn at a constant speed, word after word. */
 .ink {
   position: absolute;
   inset: 0.08em -0.18em 0;
   z-index: -1;
   background: var(--hl);
-  transform-origin: left center;
+  animation: ink 160ms linear both;
+  animation-delay: calc(750ms + var(--i) * 45ms);
 }
 
 .anchor {
@@ -194,6 +228,17 @@
   line-height: 1.45;
   text-align: left;
   hyphens: manual;
+  animation: rise 400ms var(--ease-out) 1350ms both;
+}
+
+/* Reduced motion: everything is already in place. */
+@media (prefers-reduced-motion: reduce) {
+  .field,
+  .sheetWrap,
+  .ink,
+  .note {
+    animation: none;
+  }
 }
 
 .note p + p,

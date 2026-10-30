@@ -40,7 +40,7 @@
   width: 35%;
   height: 100%;
   background: var(--hl);
-  animation: sweep 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  animation: sweep 1.6s linear infinite;
 }
 
 @keyframes sweep {
@@ -301,6 +301,39 @@
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   padding: 1px 2px;
+}
+
+/* The hero's gesture on the real output: as a verified quote comes on screen
+   the marker draws across it (clip-path, on-screen movement → ease-in-out),
+   then its label appears. Staggered by --sweep-delay within a batch. */
+.trazo {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 500ms var(--ease-in-out) var(--sweep-delay, 0ms);
+}
+
+.prose blockquote[data-swept] .trazo {
+  clip-path: inset(0 0 0 0);
+}
+
+.prose blockquote[data-cita='verificada']::before {
+  opacity: 0;
+  transition: opacity 150ms var(--ease-out) calc(var(--sweep-delay, 0ms) + 450ms);
+}
+
+.prose blockquote[data-cita='verificada'][data-swept]::before {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trazo {
+    clip-path: none;
+    transition: none;
+  }
+
+  .prose blockquote[data-cita='verificada']::before {
+    opacity: 1;
+    transition: none;
+  }
 }
 
 .prose blockquote[data-cita='no-verificada']::before {
