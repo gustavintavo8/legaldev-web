@@ -21,7 +21,12 @@ export class ApiError extends Error {
 
 function withTimeout(ms: number, signal?: AbortSignal): AbortSignal {
   const timeout = AbortSignal.timeout(ms);
-  return signal ? AbortSignal.any([timeout, signal]) : timeout;
+  if (!signal) return timeout;
+  if (typeof AbortSignal.any === 'function') return AbortSignal.any([timeout, signal]);
+  // Safari < 17.4 has no AbortSignal.any: combine the two by hand.
+  const ac = new AbortController();
+  for (const s of [timeout, signal]) s.addEventListener('abort', () => ac.abort(s.reason), { once: true });
+  return ac.signal;
 }
 
 export async function fetchHealth(signal?: AbortSignal): Promise<Health> {

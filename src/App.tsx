@@ -19,7 +19,7 @@ export default function App() {
       <main id="contenido">
         <Hero onExample={analysis.loadExample} />
         <Demo analysis={analysis} health={health} />
-        <Report state={analysis.state} />
+        <Report state={analysis.state} onExample={analysis.loadExample} />
         <HowItWorks />
         <Shelf />
         <Mcp />

@@ -92,6 +92,15 @@ pre {
   overscroll-behavior: contain;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px; /* taste-skill-ignore: visually hidden text */
+  height: 1px; /* taste-skill-ignore: visually hidden text */
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .title {
   font-size: var(--step-head);
   font-weight: 500;

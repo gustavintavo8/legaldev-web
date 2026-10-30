@@ -34,7 +34,8 @@ export default function PrivacyNotice({ email = CONTACT_EMAIL }: { email?: strin
         <dt>Finalidad</dt>
         <dd>
           Generar el informe que pides al enviar el formulario y limitar el número de consultas por dirección IP para
-          proteger el servicio.
+          proteger el servicio. Además, la web comprueba el estado del servidor al cargar la página, lo que envía tu
+          dirección IP a Hugging Face aunque no envíes el formulario.
         </dd>
         <dt>Base jurídica</dt>
         <dd>

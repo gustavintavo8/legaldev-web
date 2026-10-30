@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from 'motion/react';
-import { type FormEvent, useId, useState } from 'react';
+import { type FormEvent, useEffect, useId, useState } from 'react';
 import type { Analysis } from '../hooks/useAnalysis';
 import type { HealthView } from '../hooks/useHealth';
-import type { FormValues } from '../lib/payload';
+import { DEFAULT_VALUES, type FormValues } from '../lib/payload';
 import type { DatoPersonal, Monetizacion, TipoIA, TipoProyecto } from '../lib/types';
 import Chip from './Chip';
 import styles from './Demo.module.css';
@@ -94,6 +94,17 @@ export default function Demo({ analysis, health }: Props) {
   const [details, setDetails] = useState(false);
   const id = useId();
   const loading = state.kind === 'loading';
+
+  // Loading the example can change answers hidden under «Más detalles»; show them
+  // so they don't travel unseen with the user's next analysis.
+  useEffect(() => {
+    if (state.kind !== 'success' || !state.ejemplo) return;
+    const hiddenChanged =
+      DETALLES.some(([key]) => values[key] !== DEFAULT_VALUES[key]) || values.monetizacion !== DEFAULT_VALUES.monetizacion;
+    if (hiddenChanged) setDetails(true);
+    // Only when a new example lands, not on every edit.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
 
   const set = <K extends keyof FormValues>(key: K, value: FormValues[K]) => setValues({ ...values, [key]: value });
 

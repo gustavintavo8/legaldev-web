@@ -126,6 +126,14 @@ it('el ejemplo rellena el formulario', async () => {
   expect(screen.getByLabelText('¿Usa cookies?')).toBeChecked();
 });
 
+it('si el ejemplo cambia respuestas de «Más detalles», las deja a la vista', async () => {
+  const user = userEvent.setup();
+  render(<Harness />);
+  await user.click(screen.getByRole('button', { name: '¿Sin tiempo? Mira un informe real' }));
+  expect(screen.getByRole('button', { name: 'Más detalles' })).toHaveAttribute('aria-expanded', 'true');
+  expect(screen.getByLabelText('¿Es de acceso público?')).toBeChecked();
+});
+
 it('muestra el mensaje de error de la API', async () => {
   const user = userEvent.setup();
   vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('{}', { status: 429 })));

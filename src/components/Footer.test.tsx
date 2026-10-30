@@ -54,6 +54,7 @@ describe('privacidad', () => {
       'una hora',
       'AEPD',
       'Sin cookies propias ni analítica',
+      'comprueba el estado del servidor al cargar la página',
     ])
       expect(notice).toHaveTextContent(t);
   });

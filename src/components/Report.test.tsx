@@ -1,4 +1,6 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 import { EJEMPLO } from '../data/example';
 import type { AnalysisState } from '../hooks/useAnalysis';
 import Report from './Report';
@@ -83,8 +85,59 @@ it('avisa si el informe llega sin texto', () => {
   expect(screen.getByText('El servidor no ha devuelto el texto del informe.')).toBeInTheDocument();
 });
 
+it('con citas.total 0 no marca ninguna cita como comprobada', () => {
+  const data = { ...EJEMPLO.respuesta, citas: { total: 0, verificadas: 0, no_verificadas: [] } };
+  const { container } = render(<Report state={ok(data)} />);
+  expect(container.querySelectorAll('blockquote[data-cita]')).toHaveLength(0);
+});
+
+it('sin datos de citas no marca ninguna cita', () => {
+  const data = { respuesta_completa: '> "datos personales" — RGPD, p. 1', normativas_detectadas: ['RGPD'], chunks_utilizados: 1 };
+  const { container } = render(<Report state={ok(data)} />);
+  expect(container.querySelectorAll('blockquote[data-cita]')).toHaveLength(0);
+});
+
+it('anuncia el resultado en una frase, no el informe entero', () => {
+  const { container } = render(<Report state={ok()} />);
+  expect(container.querySelector('#informe')).not.toHaveAttribute('aria-live');
+  expect(screen.getByRole('status')).toHaveTextContent('Informe listo: 10 de 13 citas comprobadas.');
+});
+
+it('el contador de segundos no se anuncia', () => {
+  render(<Report state={{ kind: 'loading', startedAt: Date.now() }} />);
+  expect(screen.getByText('0 s')).toHaveAttribute('aria-hidden', 'true');
+  expect(screen.getByRole('status')).toHaveTextContent('Analizando normativa…');
+});
+
+it('el error de red ofrece el informe de ejemplo', async () => {
+  const user = userEvent.setup();
+  const onExample = vi.fn();
+  render(<Report state={{ kind: 'error', message: 'No se ha podido contactar con el servidor.', offerExample: true }} onExample={onExample} />);
+  await user.click(screen.getByRole('button', { name: 'Ver un informe de ejemplo' }));
+  expect(onExample).toHaveBeenCalledTimes(1);
+});
+
+it('espera al siguiente frame para desplazarse y lleva el foco al informe', async () => {
+  const scroll = vi.mocked(Element.prototype.scrollIntoView);
+  const { rerender } = render(<Report state={{ kind: 'idle' }} />);
+  scroll.mockClear();
+  rerender(<Report state={ok()} />);
+  expect(scroll).not.toHaveBeenCalled();
+  await waitFor(() => expect(scroll).toHaveBeenCalled());
+  await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('article')));
+});
+
+it('vuelve a llevar al informe si se pide otra vez el mismo resultado', async () => {
+  const scroll = vi.mocked(Element.prototype.scrollIntoView);
+  const { rerender } = render(<Report state={ok(EJEMPLO.respuesta, true)} />);
+  await waitFor(() => expect(scroll).toHaveBeenCalled());
+  scroll.mockClear();
+  rerender(<Report state={ok(EJEMPLO.respuesta, true)} />);
+  await waitFor(() => expect(scroll).toHaveBeenCalled());
+});
+
 it('muestra el error sin emoji', () => {
-  render(<Report state={{ kind: 'error', message: 'Demasiadas consultas: espera un minuto y vuelve a intentarlo.' }} />);
+  render(<Report state={{ kind: 'error', message: 'Demasiadas consultas: espera un minuto y vuelve a intentarlo.', offerExample: false }} />);
   const alert = screen.getByRole('alert');
   expect(alert).toHaveTextContent('Demasiadas consultas');
   expect(alert.textContent).not.toContain('⚠'); // taste-skill-ignore: asserts the emoji is stripped

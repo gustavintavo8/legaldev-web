@@ -29,6 +29,18 @@ describe('fetchHealth', () => {
     await expect(fetchHealth()).resolves.toEqual({ state: 'offline' });
   });
 
+  it('sigue funcionando sin AbortSignal.any (Safari < 17.4)', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse(200, { status: 'ok', docs_indexed: 13756 })));
+    const original = AbortSignal.any;
+    // @ts-expect-error simulating an older browser
+    delete AbortSignal.any;
+    try {
+      await expect(fetchHealth(new AbortController().signal)).resolves.toEqual({ state: 'online', chunks: 13756 });
+    } finally {
+      AbortSignal.any = original;
+    }
+  });
+
   it('offline si falla la red', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Failed to fetch')));
     await expect(fetchHealth()).resolves.toEqual({ state: 'offline' });

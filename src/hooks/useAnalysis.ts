@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import { EJEMPLO } from '../data/example';
-import { analyze, errorMessage } from '../lib/api';
+import { analyze, ApiError, errorMessage } from '../lib/api';
 import { buildPayload, DEFAULT_VALUES, type FormValues, valuesFromQuestionnaire } from '../lib/payload';
 import type { RAGResponse } from '../lib/types';
 
@@ -8,7 +8,10 @@ export type AnalysisState =
   | { kind: 'idle' }
   | { kind: 'loading'; startedAt: number }
   | { kind: 'success'; data: RAGResponse; ejemplo: boolean }
-  | { kind: 'error'; message: string };
+  | { kind: 'error'; message: string; offerExample: boolean };
+
+// When the server can't be reached or is down, the real example is the way forward.
+const offersExample = (e: unknown) => e instanceof TypeError || (e instanceof ApiError && (e.status === 503 || e.status === null));
 
 export function useAnalysis() {
   const [values, setValuesState] = useState<FormValues>(DEFAULT_VALUES);
@@ -32,7 +35,7 @@ export function useAnalysis() {
         if (!ac.signal.aborted) setState({ kind: 'success', data, ejemplo: false });
       })
       .catch((e) => {
-        if (!ac.signal.aborted) setState({ kind: 'error', message: errorMessage(e) });
+        if (!ac.signal.aborted) setState({ kind: 'error', message: errorMessage(e), offerExample: offersExample(e) });
       })
       .finally(() => {
         if (controller.current === ac) controller.current = null;

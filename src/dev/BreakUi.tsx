@@ -9,7 +9,9 @@ type Key = (typeof STATES)[number];
 const LABELS: Record<Key, string> = { demo: 'Demo data', worst: 'Worst case', empty: 'Empty', one: 'One', error: 'Error' };
 
 function stateFor(k: Key): AnalysisState {
-  return k === 'error' ? { kind: 'error', message: WORST_ERROR } : { kind: 'success', data: FIXTURES[k], ejemplo: false };
+  return k === 'error'
+    ? { kind: 'error', message: WORST_ERROR, offerExample: true }
+    : { kind: 'success', data: FIXTURES[k], ejemplo: false };
 }
 
 export default function BreakUi() {
@@ -20,7 +22,7 @@ export default function BreakUi() {
   };
   return (
     <>
-      <Report key={key} state={stateFor(key)} />
+      <Report key={key} state={stateFor(key)} onExample={() => pick('demo')} />
       <div
         style={{
           position: 'fixed', bottom: 16, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 2,

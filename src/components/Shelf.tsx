@@ -43,7 +43,7 @@ export default function Shelf() {
           </Reveal>
           <Reveal as="p" delay={0.07} className={`lead ${styles.lead}`}>
             {TOTAL_FRAGMENTOS.toLocaleString('es-ES')} fragmentos de textos oficiales de EUR-Lex, el BOE, la AEPD y el CCII.
-            Cada lomo es una norma y su altura, cuánto texto aporta. Elige una para ver cuándo entra en tu informe.
+            Cada lomo es una norma: cuanto más alto, más fragmentos aporta al índice. Elige una para ver cuándo entra en tu informe.
           </Reveal>
         </div>
 
@@ -64,11 +64,12 @@ export default function Shelf() {
                       type="button"
                       className={styles.spine}
                       style={{ ['--h' as string]: `${Math.round(MIN_H + share * (MAX_H - MIN_H))}px`, ['--w' as string]: `${Math.max(18, share * 100)}%` }}
-                      aria-label={`${n.nombre}, ${n.fragmentos} fragmentos`}
+                      aria-label={`${n.corto}: ${n.nombre}, ${n.fragmentos} fragmentos`}
                       aria-pressed={selected}
                       tabIndex={selected ? 0 : -1}
                       onClick={() => select(i)}
                       onKeyDown={(e) => onKey(e, i)}
+                      onPointerEnter={(e) => e.pointerType === 'mouse' && setSel(i)}
                       initial={reduce ? false : { scaleY: 0 }}
                       animate={seen ? { scaleY: 1 } : { scaleY: 0 }}
                       transition={{ duration: 0.5, ease: EASE, delay: i * 0.03 }}
