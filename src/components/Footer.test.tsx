@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { AUTOR, REPO, TUTOR } from '../data/site';
 import Footer from './Footer';
 import Mcp from './Mcp';
@@ -11,6 +11,19 @@ describe('MCP', () => {
     for (const t of ['analizar_proyecto', 'listar_normativas', 'consultar_obligaciones'])
       expect(screen.getAllByText(new RegExp(t)).length).toBeGreaterThan(0);
     expect(screen.getByText('En desarrollo · demo prevista para diciembre de 2026')).toBeInTheDocument();
+  });
+
+  it('presenta cada herramienta con qué hace, sin un bloque de código que se desplace', () => {
+    const { container } = render(<Mcp />);
+    expect(container.querySelector('pre')).toBeNull();
+    const tools = screen.getByRole('list', { name: 'Herramientas MCP' });
+    const items = within(tools).getAllByRole('listitem');
+    expect(items.map((li) => li.querySelector('code')?.textContent)).toEqual([
+      'analizar_proyecto',
+      'listar_normativas',
+      'consultar_obligaciones',
+    ]);
+    expect(items[2]).toHaveTextContent('sin pasar por el modelo');
   });
 });
 

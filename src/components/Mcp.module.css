@@ -8,7 +8,7 @@
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: 24px;
-  row-gap: 48px;
+  row-gap: 56px;
   align-items: start;
 }
 
@@ -28,29 +28,62 @@
   font-weight: 500;
 }
 
-.fragment {
+/* The tools sit on the field itself, as type: no box, no scrolling code panel. */
+.tools {
   grid-column: 7 / span 6;
   min-width: 0;
 }
 
-.caption {
-  margin-bottom: 12px;
+.tool + .tool {
+  margin-top: 44px;
+}
+
+.name {
+  display: block;
+  color: var(--hl);
+  font-size: var(--step-lead);
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+
+.does {
+  margin-top: 10px;
+  max-width: 44ch;
+}
+
+.io {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
   font-size: var(--step-small);
   color: #b9b9b2;
 }
 
-.code {
-  overflow: auto;
-  padding: 24px;
-  background: #1d1d1d;
-  color: #ececec;
+.io code {
+  color: var(--paper);
+  overflow-wrap: anywhere;
+}
+
+.caption {
+  margin-top: 48px;
   font-size: var(--step-small);
-  line-height: 1.6;
+  color: #b9b9b2;
 }
 
 @media (max-width: 1023px) {
   .copy,
-  .fragment {
+  .tools {
     grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .name {
+    font-size: var(--step-body);
+  }
+
+  .io {
+    flex-direction: column;
   }
 }
