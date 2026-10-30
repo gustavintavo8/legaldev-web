@@ -1,0 +1,72 @@
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px; /* taste-skill-ignore: visually hidden input */
+  pointer-events: none;
+}
+
+.track {
+  position: relative;
+  flex-shrink: 0;
+  width: 44px;
+  height: 24px;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1.5px var(--ink-soft); /* taste-skill-ignore: form control */
+  transition: background-color var(--ui-fast) var(--ease-out), box-shadow var(--ui-fast) var(--ease-out); /* taste-skill-ignore: form control */
+}
+
+.thumb {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 16px;
+  background: var(--ink-soft);
+  transition: transform var(--ui-fast) var(--ease-out), background-color var(--ui-fast) var(--ease-out);
+}
+
+.input:checked + .track {
+  background: var(--ink);
+  box-shadow: inset 0 0 0 1.5px var(--ink); /* taste-skill-ignore: form control */
+}
+
+.input:checked + .track .thumb {
+  transform: translateX(20px);
+  background: var(--hl);
+}
+
+.input:focus-visible + .track {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.toggle:active .thumb {
+  transform: scale(0.9);
+}
+
+.toggle:active .input:checked + .track .thumb {
+  transform: translateX(20px) scale(0.9);
+}
+
+.text {
+  font-size: var(--step-body);
+}
+
+.toggle[data-disabled] {
+  cursor: not-allowed;
+}
+
+.toggle[data-disabled] .track,
+.toggle[data-disabled] .text {
+  opacity: 0.4;
+}

@@ -1,0 +1,40 @@
+.nav {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 84px;
+}
+
+.wordmark {
+  font-size: var(--step-body);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.links {
+  display: flex;
+  gap: clamp(16px, 2.4vw, 36px);
+  font-size: var(--step-small);
+}
+
+.links a {
+  text-decoration: underline 2px transparent;
+  text-underline-offset: 6px;
+  transition: text-decoration-color var(--ui-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .links a:hover {
+    text-decoration-color: var(--ink);
+  }
+}
+
+@media (max-width: 640px) {
+  .links li:nth-child(-n + 2) {
+    display: none;
+  }
+}

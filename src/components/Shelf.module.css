@@ -1,0 +1,219 @@
+.section {
+  margin-top: var(--section-gap);
+  padding-block: clamp(80px, 10vw, 140px);
+  background: var(--hl);
+  scroll-margin-top: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: 56px;
+}
+
+.head {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: 24px;
+  align-items: end;
+}
+
+.head > :first-child {
+  grid-column: 1 / span 6;
+}
+
+.lead {
+  grid-column: 7 / span 6;
+  max-width: 44ch;
+}
+
+.shelf {
+  grid-column: 1 / span 8;
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+  min-width: 0;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.group:nth-child(1) {
+  flex: 10;
+}
+
+.group:nth-child(2) {
+  flex: 4;
+}
+
+.group:nth-child(3) {
+  flex: 7;
+}
+
+.group:nth-child(4) {
+  flex: 0 0 auto;
+}
+
+.group:nth-child(4) .spines {
+  width: 44px;
+}
+
+.spines {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  min-height: 300px;
+}
+
+.spine {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: var(--h);
+  background: var(--ink);
+  color: var(--hl);
+  transform-origin: bottom center;
+  transition: background-color var(--ui-fast) var(--ease-out), color var(--ui-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .spine:hover {
+    background: #2b2b2b;
+  }
+}
+
+.spine[aria-pressed='true'] {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.spine:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.spineLabel {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  writing-mode: vertical-rl;
+  transform: translateX(-50%) rotate(180deg);
+  font-size: var(--step-small);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.marker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -10px;
+  height: 4px;
+  background: var(--ink);
+}
+
+.groupLabel {
+  font-size: var(--step-small);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.detail {
+  grid-column: 9 / span 4;
+  align-self: end;
+  min-height: 300px;
+  padding: 28px;
+  background: var(--paper);
+}
+
+.detailGroup {
+  font-size: var(--step-small);
+  color: var(--ink-soft);
+}
+
+.detailName {
+  margin-top: 10px;
+  font-size: var(--step-lead);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.detailCount {
+  margin-top: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.detailRule {
+  margin-top: 18px;
+  padding: 12px 14px;
+  background: var(--paper-2);
+}
+
+@media (max-width: 1023px) {
+  .head > :first-child,
+  .lead,
+  .shelf,
+  .detail {
+    grid-column: 1 / -1;
+  }
+
+  .detail {
+    min-height: 0;
+  }
+}
+
+/* Phones: rotated spine labels become unreadable, so the shelf turns into bars. */
+@media (max-width: 640px) {
+  .shelf {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 28px;
+  }
+
+  .group {
+    flex-direction: column-reverse;
+  }
+
+  .spines {
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
+  }
+
+  .spine {
+    flex: none;
+    /* Never narrower than its label. */
+    width: max(var(--w), 9rem);
+    height: 40px;
+    transform-origin: left center;
+  }
+
+  .group:nth-child(4) .spines {
+    width: auto;
+  }
+
+  .spineLabel {
+    left: 12px;
+    bottom: auto;
+    top: 50%;
+    writing-mode: horizontal-tb;
+    transform: translateY(-50%);
+  }
+
+  .marker {
+    left: auto;
+    top: 0;
+    bottom: 0;
+    right: -10px;
+    width: 4px;
+    height: auto;
+  }
+}

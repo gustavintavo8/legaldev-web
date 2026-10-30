@@ -1,0 +1,89 @@
+.section {
+  padding-block: var(--section-gap);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: 56px;
+  align-items: start;
+}
+
+.copy {
+  grid-column: 1 / span 5;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.status {
+  align-self: flex-start;
+  padding: 8px 12px;
+  background: var(--hl);
+  color: var(--ink);
+  font-size: var(--step-small);
+  font-weight: 500;
+}
+
+/* The tools sit on the field itself, as type: no box, no scrolling code panel. */
+.tools {
+  grid-column: 7 / span 6;
+  min-width: 0;
+}
+
+.tool + .tool {
+  margin-top: 44px;
+}
+
+.name {
+  display: block;
+  color: var(--hl);
+  font-size: var(--step-lead);
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+
+.does {
+  margin-top: 10px;
+  max-width: 44ch;
+}
+
+.io {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  font-size: var(--step-small);
+  color: #b9b9b2;
+}
+
+.io code {
+  color: var(--paper);
+  overflow-wrap: anywhere;
+}
+
+.caption {
+  margin-top: 48px;
+  font-size: var(--step-small);
+  color: #b9b9b2;
+}
+
+@media (max-width: 1023px) {
+  .copy,
+  .tools {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .name {
+    font-size: var(--step-body);
+  }
+
+  .io {
+    flex-direction: column;
+  }
+}
