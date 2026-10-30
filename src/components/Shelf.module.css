@@ -72,26 +72,57 @@
   min-height: 300px;
 }
 
+/* The button carries the lift; .fill inside is the visible spine. Pulling a
+   book off the shelf: it rises a little under the pointer and stays pulled out
+   when chosen. Interruptible CSS transitions, so sweeping across or arrowing
+   through the shelf never queues up motion. */
 .spine {
+  --lift: 0px;
   position: relative;
   flex: 1;
   min-width: 0;
   height: var(--h);
+  transform: translateY(var(--lift));
+  transition: transform 160ms var(--ease-out);
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
   background: var(--ink);
   color: var(--hl);
-  transform-origin: bottom center;
-  transition: background-color var(--ui-fast) var(--ease-out), color var(--ui-fast) var(--ease-out);
+  transition: background-color var(--ui-fast) ease, color var(--ui-fast) ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .spine:hover {
+    --lift: -4px;
+  }
+
+  .spine:hover .fill {
     background: #2b2b2b;
   }
 }
 
 .spine[aria-pressed='true'] {
+  --lift: -10px;
+}
+
+.spine:active {
+  transform: translateY(var(--lift)) scale(0.97);
+}
+
+.spine[aria-pressed='true'] .fill {
   background: var(--paper);
   color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spine,
+  .spine:hover,
+  .spine[aria-pressed='true'] {
+    --lift: 0px;
+  }
 }
 
 .spine:focus-visible {
@@ -188,12 +219,14 @@
     min-height: 0;
   }
 
-  .spine {
+  /* Bars on phones: no lift, the colour carries the selection. */
+  .spine,
+  .spine[aria-pressed='true'] {
+    --lift: 0px;
     flex: none;
     /* Never narrower than its label. */
     width: max(var(--w), 9rem);
     height: 40px;
-    transform-origin: left center;
   }
 
   .group:nth-child(4) .spines {

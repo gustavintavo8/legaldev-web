@@ -1,26 +1,21 @@
-import { motion, useReducedMotion } from 'motion/react';
-import { Fragment, type ReactNode } from 'react';
+import { type CSSProperties, Fragment, type ReactNode } from 'react';
 import { FRASE_CITADA, RGPD_PAGINA } from '../data/rgpd';
 import styles from './Hero.module.css';
 
 const [FECHA, PAGINA, DIARIO, IDIOMA] = RGPD_PAGINA.cabecera;
 
-/** The cited phrase, highlighted word by word so the marker sweeps across line breaks. */
-function Highlight({ delay }: { delay: number }) {
-  const reduce = useReducedMotion();
+/**
+ * The cited phrase, highlighted word by word so the marker sweeps across line
+ * breaks. Each word's ink is a CSS animation delayed by its index (--i).
+ */
+function Highlight() {
   const words = FRASE_CITADA.split(' ');
   return (
     <mark className={styles.mark}>
       {words.map((w, i) => (
         <span key={i}>
           <span className={styles.word}>
-            <motion.span
-              className={styles.ink}
-              aria-hidden="true"
-              initial={reduce ? false : { scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.16, ease: 'linear', delay: delay + i * 0.045 }}
-            />
+            <span className={styles.ink} aria-hidden="true" style={{ '--i': i } as CSSProperties} />
             {w}
           </span>
           {i < words.length - 1 ? ' ' : ''}
@@ -31,12 +26,11 @@ function Highlight({ delay }: { delay: number }) {
 }
 
 interface Props {
-  highlightDelay: number;
   /** Margin note, anchored right under the cited recital so it never covers the phrase. */
   note?: ReactNode;
 }
 
-export default function GazetteSheet({ highlightDelay, note }: Props) {
+export default function GazetteSheet({ note }: Props) {
   return (
     <div className={styles.sheet} data-ui>
       <div className={styles.sheetHead}>
@@ -56,7 +50,7 @@ export default function GazetteSheet({ highlightDelay, note }: Props) {
               <span className={styles.recitalNum}>({c.n})</span>
               <span>
                 {before}
-                {cited && <Highlight delay={highlightDelay} />}
+                {cited && <Highlight />}
               </span>
             </p>
             {cited && note && <div className={styles.anchor}>{note}</div>}

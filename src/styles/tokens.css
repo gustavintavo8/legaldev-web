@@ -21,5 +21,6 @@
   --section-gap: clamp(120px, 14vw, 200px);
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ui-fast: 160ms;
 }

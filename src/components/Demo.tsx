@@ -71,6 +71,16 @@ const CCAA = [
   'Valencia',
 ];
 
+// Revealed fields fade and settle in place while the height snaps. Never tween
+// height: 'auto' — Motion's measurement of it restores the window scroll and
+// cancels the smooth scroll to the report (see useArrive in Report.tsx).
+const REVEAL = {
+  initial: { opacity: 0, transform: 'translateY(-6px)' },
+  animate: { opacity: 1, transform: 'translateY(0px)' },
+  exit: { opacity: 0, transition: { duration: 0.1 } },
+  transition: { duration: 0.18, ease: [0.22, 1, 0.36, 1] as const },
+};
+
 type BoolField = {
   [K in keyof FormValues]: FormValues[K] extends boolean ? K : never;
 }[keyof FormValues];
@@ -186,10 +196,7 @@ export default function Demo({ analysis, health }: Props) {
                       <motion.div
                         key="tipo-ia"
                         className={styles.reveal}
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                        {...REVEAL}
                       >
                         <div className={styles.nested}>
                           <label className={styles.label} htmlFor={`${id}-ia`}>
@@ -282,10 +289,7 @@ export default function Demo({ analysis, health }: Props) {
                     key="detalles"
                     id={`${id}-detalles`}
                     className={styles.reveal}
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+                    {...REVEAL}
                   >
                     <div className={styles.detailsBody}>
                       {DETALLES.map(([key, label]) => (

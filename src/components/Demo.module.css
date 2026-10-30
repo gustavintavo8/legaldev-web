@@ -33,7 +33,7 @@
   text-decoration-thickness: 2px;
   text-underline-offset: 5px;
   text-decoration-color: var(--hl);
-  transition: text-decoration-color var(--ui-fast) var(--ease-out);
+  transition: text-decoration-color var(--ui-fast) ease;
 }
 
 @media (hover: hover) and (pointer: fine) {

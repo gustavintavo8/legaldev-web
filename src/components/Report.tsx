@@ -27,33 +27,26 @@ function Elapsed({ startedAt }: { startedAt: number }) {
 const nextFrame = (fn: () => void) =>
   typeof requestAnimationFrame === 'function' ? requestAnimationFrame(fn) : window.setTimeout(fn, 16);
 
-// Motion measures `height: 'auto'` keyframes (the «Más detalles» and tipo-IA
-// reveals that loading the example opens) and then restores the window scroll
-// to where it was, which cancels a smooth scroll started in the same frames.
-const AFTER_MEASURE_MS = 160;
-
 /**
- * Brings a freshly mounted result into view and gives it focus, once the
- * layout reveals it triggered have been measured.
+ * Brings a freshly mounted result into view and gives it focus. Waits two
+ * frames so the scroll starts after the commit that mounted it. Nothing on the
+ * page may animate `height: 'auto'` with Motion: measuring it restores the
+ * window scroll and cancels this smooth scroll.
  */
 function useArrive<T extends HTMLElement>(ref: RefObject<T | null>, focus: boolean, arrival: object) {
   const reduce = useReducedMotion();
   useEffect(() => {
     let cancelled = false;
-    let timer = 0;
     nextFrame(() =>
       nextFrame(() => {
-        timer = window.setTimeout(() => {
-          const el = ref.current;
-          if (cancelled || !el) return;
-          el.closest('#informe')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-          if (focus) el.focus({ preventScroll: true });
-        }, AFTER_MEASURE_MS);
+        const el = ref.current;
+        if (cancelled || !el) return;
+        el.closest('#informe')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+        if (focus) el.focus({ preventScroll: true });
       }),
     );
     return () => {
       cancelled = true;
-      window.clearTimeout(timer);
     };
     // Every new state object is a new arrival, even with the same result (the example asked for again).
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -72,7 +65,11 @@ function Body({ markdown, citas }: { markdown: string; citas: CitationStats | un
   useEffect(() => {
     if (reduce || !ref.current) return;
     const blocks = Array.from(ref.current.children).slice(0, 14);
-    animate(blocks, { opacity: [0, 1], y: [14, 0] }, { duration: 0.45, ease: EASE, delay: stagger(0.045) });
+    animate(
+      blocks,
+      { opacity: [0, 1], transform: ['translateY(14px)', 'translateY(0px)'] },
+      { duration: 0.45, ease: EASE, delay: stagger(0.045) },
+    );
   }, [html, reduce]);
 
   return <div ref={ref} className={styles.prose} dangerouslySetInnerHTML={{ __html: html }} />;
@@ -175,9 +172,10 @@ export default function Report({ state, onExample }: Props) {
         {state.kind !== 'idle' && (
           <motion.div
             key={key}
-            initial={reduce ? false : { opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8 }}
+            initial={reduce ? false : { opacity: 0, transform: 'translateY(16px)' }}
+            animate={{ opacity: 1, transform: 'translateY(0px)' }}
+            // The system answers: the old state leaves fast so the new one isn't kept waiting (mode="wait").
+            exit={{ opacity: 0, transition: { duration: 0.12, ease: EASE } }}
             transition={{ duration: 0.3, ease: EASE }}
           >
             {state.kind === 'loading' && (

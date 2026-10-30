@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { type KeyboardEvent, useRef, useState } from 'react';
 import { GRUPOS, NORMAS, TOTAL_FRAGMENTOS } from '../data/normas';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import { useSeen } from '../hooks/useSeen';
 import Reveal from './Reveal';
 import styles from './Shelf.module.css';
@@ -16,6 +17,10 @@ export default function Shelf() {
   const shelfRef = useRef<HTMLDivElement>(null);
   const seen = useSeen(shelfRef);
   const reduce = useReducedMotion();
+  const phone = useMediaQuery('(max-width: 640px)');
+  // Spines grow up from the shelf; on phones they are bars that grow from the left.
+  // clip-path reveals without squashing the label the way a scale would.
+  const hidden = phone ? 'inset(0 100% 0 0)' : 'inset(100% 0 0 0)';
   const norma = NORMAS[sel];
 
   const select = (i: number) => {
@@ -56,7 +61,9 @@ export default function Shelf() {
                   const selected = i === sel;
                   const share = n.fragmentos / MAX;
                   return (
-                    <motion.button
+                    // The button lifts with CSS (hover, press, «pulled out» when selected);
+                    // the spine inside grows in once, along the axis the layout uses.
+                    <button
                       key={n.stem}
                       ref={(el) => {
                         buttons.current[i] = el;
@@ -70,20 +77,24 @@ export default function Shelf() {
                       onClick={() => select(i)}
                       onKeyDown={(e) => onKey(e, i)}
                       onPointerEnter={(e) => e.pointerType === 'mouse' && setSel(i)}
-                      initial={reduce ? false : { scaleY: 0 }}
-                      animate={seen ? { scaleY: 1 } : { scaleY: 0 }}
-                      transition={{ duration: 0.5, ease: EASE, delay: i * 0.03 }}
-                      whileTap={{ scale: 0.96 }}
                     >
-                      <span className={styles.spineLabel}>{n.corto}</span>
+                      <motion.span
+                        className={styles.fill}
+                        initial={reduce ? false : { clipPath: hidden }}
+                        animate={{ clipPath: seen ? 'inset(0 0 0 0)' : hidden }}
+                        transition={{ duration: 0.5, ease: EASE, delay: i * 0.03 }}
+                      >
+                        <span className={styles.spineLabel}>{n.corto}</span>
+                      </motion.span>
                       {selected && (
                         <motion.span
                           layoutId="shelf-selection"
                           className={styles.marker}
-                          transition={{ type: 'spring', bounce: 0.15, duration: 0.4 }}
+                          // Arrow keys move it: quick and without bounce.
+                          transition={{ type: 'spring', duration: 0.25, bounce: 0 }}
                         />
                       )}
-                    </motion.button>
+                    </button>
                   );
                 })}
               </div>
@@ -93,13 +104,13 @@ export default function Shelf() {
         </div>
 
         <div role="region" aria-label="Detalle de la norma" aria-live="polite" className={styles.detail}>
-          <AnimatePresence mode="wait" initial={false}>
+          {/* Swapped with the arrow keys: no exit to wait for, a short fade in. */}
+          <AnimatePresence initial={false}>
             <motion.div
               key={norma.stem}
-              initial={reduce ? false : { opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6 }}
-              transition={{ duration: 0.18, ease: EASE }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.12, ease: EASE }}
             >
               <p className={styles.detailGroup}>{norma.grupo}</p>
               <p className={styles.detailName}>{norma.nombre}</p>

@@ -24,7 +24,7 @@
 .links a {
   text-decoration: underline 2px transparent;
   text-underline-offset: 6px;
-  transition: text-decoration-color var(--ui-fast) var(--ease-out);
+  transition: text-decoration-color var(--ui-fast) ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
