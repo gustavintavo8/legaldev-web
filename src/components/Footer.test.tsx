@@ -72,8 +72,13 @@ describe('privacidad', () => {
       expect(notice).toHaveTextContent(t);
   });
 
-  it('sin email publicado, el contacto son las issues del repositorio', () => {
+  it('publica el email de contacto del autor', () => {
     render(<PrivacyNotice />);
+    expect(screen.getByRole('link', { name: 'uo286277@uniovi.es' })).toHaveAttribute('href', 'mailto:uo286277@uniovi.es');
+  });
+
+  it('sin email publicado, el contacto son las issues del repositorio', () => {
+    render(<PrivacyNotice email={null} />);
     expect(screen.getByRole('link', { name: 'a través de las issues del repositorio' })).toHaveAttribute(
       'href',
       `${REPO}/issues`,
