@@ -2,8 +2,9 @@ import type { CitationStats } from './types';
 
 // Same rules as legaldev/app/citations.py (_STRIP_RE + normalize): ignore case,
 // quotes, dashes, soft hyphens, "|", whitespace and invisible characters, which
-// the PDF extraction scatters inside words ("per files").
-const STRIP_RE = /[\s"“”«»'‘’\-–—­|​‌‍⁠﻿]+/gu;
+// the PDF extraction scatters inside words ("per files"), and the Unicode
+// hyphens (U+2010-U+2012, U+2212, U+2043) the model writes where the PDF has "-".
+const STRIP_RE = /[\s"“”«»'‘’\-‐‑‒−⁃–—­|​‌‍⁠﻿]+/gu;
 
 export function normalize(text: string): string {
   return text.normalize('NFKC').replace(STRIP_RE, '').toLocaleLowerCase('es');

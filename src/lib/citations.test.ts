@@ -21,6 +21,12 @@ it('normaliza como el backend', () => {
   expect(normalize('«Per files» – de las​ personas')).toBe('perfilesdelaspersonas');
 });
 
+it('ignora los guiones Unicode que escribe el modelo, como el backend', () => {
+  for (const c of [0x2010, 0x2011, 0x2012, 0x2212]) {
+    expect(normalize(`permi${String.fromCharCode(c)} ten`)).toBe(normalize('permi- ten'));
+  }
+});
+
 it('marca todas si las no verificadas casan', () => {
   const div = mount();
   expect(markCitations(div, citas([B.slice(0, 120)]))).toBe('marked');
