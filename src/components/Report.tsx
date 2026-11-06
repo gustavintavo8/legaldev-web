@@ -2,7 +2,7 @@ import { AnimatePresence, animate, motion, stagger, useReducedMotion } from 'mot
 import { type RefObject, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { EJEMPLO } from '../data/example';
 import type { AnalysisState } from '../hooks/useAnalysis';
-import { markCitations, stripLeadingEmoji } from '../lib/citations';
+import { markCitations, stripDisclaimerQuotes, stripLeadingEmoji } from '../lib/citations';
 import { renderMarkdown } from '../lib/markdown';
 import { observeOnce } from '../lib/observeOnce';
 import type { CitationStats, RAGResponse } from '../lib/types';
@@ -160,7 +160,7 @@ function Success({ data, ejemplo, arrival }: { data: RAGResponse; ejemplo: boole
 
       <div className={styles.content}>
         {data.respuesta_completa.trim() ? (
-          <Body markdown={data.respuesta_completa} citas={citas} />
+          <Body markdown={stripDisclaimerQuotes(data.respuesta_completa, disclaimer)} citas={citas} />
         ) : (
           <p className={styles.emptyBody}>El servidor no ha devuelto el texto del informe.</p>
         )}

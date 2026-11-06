@@ -1,4 +1,4 @@
-import { markCitations, normalize, stripLeadingEmoji } from './citations';
+import { markCitations, normalize, stripDisclaimerQuotes, stripLeadingEmoji } from './citations';
 
 const A = 'ser utilizadas para elaborar per files de las personas físicas e identificarlas.';
 const B =
@@ -74,4 +74,24 @@ it('no duplica las notas si se vuelve a marcar', () => {
 
 it('quita el emoji inicial del aviso', () => {
   expect(stripLeadingEmoji('⚠️ Esta información es orientativa')).toBe('Esta información es orientativa'); // taste-skill-ignore: input of the strip test
+});
+
+describe('stripDisclaimerQuotes', () => {
+  const AVISO = '⚠️ Esta información es orientativa y no constituye asesoramiento legal.';
+
+  const CUERPO = ['**Sumario**', '', '> "cita" — RGPD, p. 3'].join('\n');
+
+  it('quita el aviso que abre y cierra el informe', () => {
+    const md = [`> ${AVISO}`, '', CUERPO, '', `> ${AVISO}`].join('\n');
+    expect(stripDisclaimerQuotes(md, AVISO)).toBe(CUERPO);
+  });
+
+  it('deja intacto un informe sin el aviso dentro (API anterior)', () => {
+    expect(stripDisclaimerQuotes(CUERPO, AVISO)).toBe(CUERPO);
+  });
+
+  it('sin disclaimer no toca nada', () => {
+    const md = [`> ${AVISO}`, '', 'Texto'].join('\n');
+    expect(stripDisclaimerQuotes(md, undefined)).toBe(md);
+  });
 });

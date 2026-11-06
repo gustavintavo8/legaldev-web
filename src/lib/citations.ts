@@ -62,3 +62,19 @@ export function markCitations(root: HTMLElement, citas: CitationStats | undefine
 export function stripLeadingEmoji(s: string): string {
   return s.replace(/^[\p{Extended_Pictographic}️‍\s]+/u, '');
 }
+
+/**
+ * The API opens and closes `respuesta_completa` with the disclaimer as a
+ * blockquote ("> <disclaimer>"), so the notice travels with the report when it
+ * is copied or shown by other clients. The page already shows the disclaimer
+ * in its own box, so it drops those two copies to avoid repeating it three
+ * times. Anything else in the report is left untouched.
+ */
+export function stripDisclaimerQuotes(markdown: string, disclaimer: string | undefined): string {
+  if (!disclaimer) return markdown;
+  const quote = `> ${disclaimer.trim()}`;
+  let out = markdown.trim();
+  if (out.startsWith(quote)) out = out.slice(quote.length).trimStart();
+  if (out.endsWith(quote)) out = out.slice(0, out.length - quote.length).trimEnd();
+  return out;
+}
